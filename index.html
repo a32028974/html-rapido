@@ -12,54 +12,84 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido</h2>
-  <form id="formulario">
-    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
-    <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
-    <input type="text" name="dni" placeholder="DNI" required>
-    <input type="text" name="nombre" placeholder="Apellido" required>
-    <input type="text" name="cristal" placeholder="Tipo de cristal" required>
-    <input type="text" name="armazon_detalle" placeholder="Modelo de armazón" required>
-    <input type="text" name="numero_armazon" placeholder="Número de armazón (opcional)">
-    <input type="submit" value="Guardar">
-  </form>
+  <h2>Ingreso rápido V2-7 19.25</h2>
+ <form id="formulario">
+  <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
+  <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
+  <input type="text" name="dni" placeholder="DNI" required>
+  <input type="text" name="nombre" placeholder="Apellido" required>
+  <input type="text" name="cristal" placeholder="Tipo de cristal" required>
+
+  <div style="display: flex; gap: 10px;">
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón">
+    <button type="button" id="buscarArmazon">Actualizar</button>
+  </div>
+
+  <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
+  <input type="submit" value="Guardar">
+</form>
+
 
   <p id="mensaje"></p>
 
-  <script>
-    const urlBase = 'https://script.google.com/macros/s/AKfycbwUtBOkCrIeGlfEoJp7zuVMof6wuuFQVJDAeKPAzxuCDUMT4_t67sxr_BdGixrDXndRXw/exec';
+ <script>
+  const urlBase = 'https://script.google.com/macros/s/AKfycbxiBnqOWqG4qNluMDhaGztWAG4MOBENkF3EToBJ_pTfKtxf5liyGuuOZWxvplBe1ZCCnA/exec';
 
-    // Insertar fecha de hoy automáticamente
-    const hoy = new Date();
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const yy = String(hoy.getFullYear()).slice(-2);
-    document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+  // Insertar fecha de hoy automáticamente
+  const hoy = new Date();
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const yy = String(hoy.getFullYear()).slice(-2);
+  document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
 
-    const form = document.getElementById('formulario');
-    const mensaje = document.getElementById('mensaje');
+  const form = document.getElementById('formulario');
+  const mensaje = document.getElementById('mensaje');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  // Enviar formulario
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const data = new FormData(form);
-      const params = new URLSearchParams();
-      data.forEach((value, key) => params.append(key, value));
+    const data = new FormData(form);
+    const params = new URLSearchParams();
+    data.forEach((value, key) => params.append(key, value));
 
-      const fullUrl = `${urlBase}?${params.toString()}`;
+    const fullUrl = `${urlBase}?${params.toString()}`;
 
-      try {
-        const res = await fetch(fullUrl);
-        const text = await res.text();
-        mensaje.textContent = text;
-        mensaje.className = text.includes('✅') ? 'ok' : 'error';
-        form.reset();
-        document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
-      } catch (error) {
-        mensaje.textContent = '❌ Error de red o conexión';
+    try {
+      const res = await fetch(fullUrl);
+      const text = await res.text();
+      mensaje.textContent = text;
+      mensaje.className = text.includes('✅') ? 'ok' : 'error';
+      form.reset();
+      document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+    } catch (error) {
+      mensaje.textContent = '❌ Error de red o conexión';
+      mensaje.className = 'error';
+    }
+  });
+
+  // Buscar modelo de armazón por número
+  document.getElementById('buscarArmazon').addEventListener('click', async () => {
+    const numero = document.getElementById('numero_armazon').value.trim();
+    if (!numero) return;
+
+    try {
+      const res = await fetch(`${urlBase}?buscarArmazon=${numero}`);
+      const texto = await res.text();
+
+      if (texto.trim()) {
+        document.getElementById('armazon_detalle').value = texto;
+        mensaje.textContent = '';
+      } else {
+        mensaje.textContent = '⚠️ Armazón no encontrado';
         mensaje.className = 'error';
       }
-    });
-  </script>
+    } catch (error) {
+      mensaje.textContent = '❌ Error al buscar el armazón';
+      mensaje.className = 'error';
+    }
+  });
+</script>
+
 </body>
 </html>
