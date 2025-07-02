@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido v <span id="version"></span></h2>
+  <h2>Ingreso rápido</h2>
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
     <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
@@ -21,44 +21,19 @@
     <input type="text" name="cristal" placeholder="Tipo de cristal" required>
     <input type="text" name="armazon_detalle" placeholder="Modelo de armazón" required>
     <input type="text" name="numero_armazon" placeholder="Número de armazón (opcional)">
-
-    <!-- Campos ocultos para compatibilidad con el script -->
-    <input type="hidden" name="total" value="">
-    <input type="hidden" name="sena" value="">
-    <input type="hidden" name="saldo" value="">
-    <input type="hidden" name="forma_pago" value="">
-    <input type="hidden" name="otro_concepto" value="">
-    <input type="hidden" name="descripcion" value="">
-    <input type="hidden" name="tipo" value="">
-    <input type="hidden" name="od_esf" value="">
-    <input type="hidden" name="od_cil" value="">
-    <input type="hidden" name="od_eje" value="">
-    <input type="hidden" name="oi_esf" value="">
-    <input type="hidden" name="oi_cil" value="">
-    <input type="hidden" name="oi_eje" value="">
-    <input type="hidden" name="add" value="">
-    <input type="hidden" name="vendedor" value="Ingreso rápido">
-
     <input type="submit" value="Guardar">
   </form>
 
   <p id="mensaje"></p>
 
   <script>
-    const url = 'https://script.google.com/macros/s/AKfycbytrzeqTpxI4M8dwgByf6NIZsmt89O7AQhhSko0OM2VgpEDc1UcfrgGC225FMUpqrKCRw/exec';
+    const urlBase = 'https://script.google.com/macros/s/AKfycbwUtBOkCrIeGlfEoJp7zuVMof6wuuFQVJDAeKPAzxuCDUMT4_t67sxr_BdGixrDXndRXw/exec';
 
-
-    // Insertar versión actual
+    // Insertar fecha de hoy automáticamente
     const hoy = new Date();
     const dd = String(hoy.getDate()).padStart(2, '0');
     const mm = String(hoy.getMonth() + 1).padStart(2, '0');
     const yy = String(hoy.getFullYear()).slice(-2);
-    const hh = String(hoy.getHours()).padStart(2, '0');
-    const min = String(hoy.getMinutes()).padStart(2, '0');
-
-    document.getElementById('version').textContent = `${dd}.${mm}.${yy} ${hh}.${min}`;
-
-    // Fecha automática
     document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
 
     const form = document.getElementById('formulario');
@@ -68,28 +43,20 @@
       e.preventDefault();
 
       const data = new FormData(form);
-      const obj = {};
-      data.forEach((value, key) => obj[key] = value);
+      const params = new URLSearchParams();
+      data.forEach((value, key) => params.append(key, value));
+
+      const fullUrl = `${urlBase}?${params.toString()}`;
 
       try {
-        const res = await fetch(url, {
-          method: 'POST',
-          body: JSON.stringify(obj),
-          headers: { 'Content-Type': 'application/json' }
-        });
-
-        const result = await res.json();
-        if (result.success) {
-          mensaje.textContent = '✅ Guardado correctamente';
-          mensaje.className = 'ok';
-          form.reset();
-          document.getElementById('fecha').value = `${dd}/${mm}/${yy}`; // volver a poner fecha de hoy
-        } else {
-          mensaje.textContent = '❌ Error: ' + (result.message || 'Intente nuevamente');
-          mensaje.className = 'error';
-        }
+        const res = await fetch(fullUrl);
+        const text = await res.text();
+        mensaje.textContent = text;
+        mensaje.className = text.includes('✅') ? 'ok' : 'error';
+        form.reset();
+        document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
       } catch (error) {
-        mensaje.textContent = '❌ Error al conectar';
+        mensaje.textContent = '❌ Error de red o conexión';
         mensaje.className = 'error';
       }
     });
