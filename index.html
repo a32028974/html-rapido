@@ -6,10 +6,13 @@
   <style>
     body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; }
     input { width: 100%; margin-bottom: 10px; padding: 8px; font-size: 16px; }
+    #mensaje { font-weight: bold; margin-top: 10px; }
+    .ok { color: green; }
+    .error { color: red; }
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido v 2.7.25 18.09</h2>
+  <h2>Ingreso rápido v <span id="V2.7.25 18.12"></span></h2>
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
     <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
@@ -17,9 +20,9 @@
     <input type="text" name="nombre" placeholder="Apellido" required>
     <input type="text" name="cristal" placeholder="Tipo de cristal" required>
     <input type="text" name="armazon_detalle" placeholder="Modelo de armazón" required>
+    <input type="text" name="numero_armazon" placeholder="Número de armazón (opcional)">
 
-    <!-- Campos ocultos para que el Apps Script no falle -->
-    <input type="hidden" name="numero_armazon" value="">
+    <!-- Campos ocultos para compatibilidad con el script -->
     <input type="hidden" name="total" value="">
     <input type="hidden" name="sena" value="">
     <input type="hidden" name="saldo" value="">
@@ -42,14 +45,22 @@
   <p id="mensaje"></p>
 
   <script>
-    // Completar fecha actual automáticamente
+    // ✅ INSERTÁ ACÁ TU URL DEL SCRIPT
+    const url = 'https://script.google.com/macros/s/AKfycbwJ37vuWy3av3CLJixgNqp-L4fLZH6DuIKgt8dX1gE8u3liS-TUeQQv_gc8ACIezqDHRw/exec';
+
+    // Insertar versión actual
     const hoy = new Date();
     const dd = String(hoy.getDate()).padStart(2, '0');
     const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const aa = String(hoy.getFullYear()).slice(-2);
-    document.getElementById('fecha').value = `${dd}/${mm}/${aa}`;
+    const yy = String(hoy.getFullYear()).slice(-2);
+    const hh = String(hoy.getHours()).padStart(2, '0');
+    const min = String(hoy.getMinutes()).padStart(2, '0');
 
-    // Envío de datos
+    document.getElementById('version').textContent = `${dd}.${mm}.${yy} ${hh}.${min}`;
+
+    // Fecha automática
+    document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+
     const form = document.getElementById('formulario');
     const mensaje = document.getElementById('mensaje');
 
@@ -59,8 +70,6 @@
       const data = new FormData(form);
       const obj = {};
       data.forEach((value, key) => obj[key] = value);
-
-      const url = 'https://script.google.com/macros/s/AKfycbwJ37vuWy3av3CLJixgNqp-L4fLZH6DuIKgt8dX1gE8u3liS-TUeQQv_gc8ACIezqDHRw/exec';
 
       try {
         const res = await fetch(url, {
@@ -72,13 +81,16 @@
         const result = await res.json();
         if (result.success) {
           mensaje.textContent = '✅ Guardado correctamente';
+          mensaje.className = 'ok';
           form.reset();
-          document.getElementById('fecha').value = `${dd}/${mm}/${aa}`; // volver a poner la fecha de hoy
+          document.getElementById('fecha').value = `${dd}/${mm}/${yy}`; // volver a poner fecha de hoy
         } else {
           mensaje.textContent = '❌ Error: ' + (result.message || 'Intente nuevamente');
+          mensaje.className = 'error';
         }
       } catch (error) {
         mensaje.textContent = '❌ Error al conectar';
+        mensaje.className = 'error';
       }
     });
   </script>
