@@ -2,128 +2,153 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario Óptica</title>
+  <title>Ingreso de Trabajo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: auto;
       padding: 20px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
+      max-width: 400px;
+      margin: auto;
     }
     input, button {
       width: 100%;
+      margin: 6px 0;
       padding: 10px;
-      margin-top: 5px;
       font-size: 16px;
     }
-    .botones-retiro button {
-      width: 32%;
-      margin-right: 1%;
-    }
     #mensaje {
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
+      color: red;
     }
-    .ok { color: green; }
-    .error { color: red; }
+    .btn-retiro {
+      width: 30%;
+      display: inline-block;
+      margin: 5px 1%;
+      padding: 10px;
+      font-size: 14px;
+    }
+    .logo {
+      width: 120px;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
   </style>
 </head>
 <body>
-  <h2>Ingreso de Trabajo v3-7 12.48 </h2>
+  <img src="logo.png" alt="Óptica Cristal" class="logo">
+
+  <h2>V 3-7 12.56 Ingreso de Trabajo</h2>
+
   <form id="formulario">
+    <label>Fecha de encargo (hoy)</label>
+    <input type="text" id="fecha" name="fecha_encargo" readonly>
 
-    <label for="fecha">Fecha de encargo (hoy)</label>
-    <input type="text" id="fecha" name="fecha" readonly>
-
-    <label for="numero_trabajo">Número de trabajo</label>
+    <label>Número de trabajo</label>
     <input type="text" id="numero_trabajo" name="numero_trabajo" required>
 
-    <label for="dni">DNI</label>
+    <label>DNI</label>
     <input type="text" id="dni" name="dni" required>
 
-    <label for="nombre">Apellido y Nombre</label>
-    <input type="text" id="nombre" name="nombre" required>
+    <label>Apellido y Nombre</label>
+    <input type="text" id="nombre" name="nombre">
 
-    <label for="cristal">Tipo de cristal</label>
+    <label>Tipo de cristal</label>
     <input type="text" id="cristal" name="cristal">
 
-    <label for="numero_armazon">Número de armazón (opcional)</label>
+    <label>Número de armazón (opcional)</label>
     <input type="text" id="numero_armazon" name="numero_armazon">
 
-    <label for="armazon_detalle">Modelo de armazón</label>
+    <label>Modelo de armazón</label>
     <input type="text" id="armazon_detalle" name="armazon_detalle">
 
     <label>Tipo de retiro</label>
-    <div class="botones-retiro">
-      <button type="button" onclick="setRetiro('normal')">Normal (7 días)</button>
-      <button type="button" onclick="setRetiro('laboratorio')">Laboratorio (15 días)</button>
-      <button type="button" onclick="setRetiro('urgente')">Urgente (3 días)</button>
+    <div>
+      <button type="button" class="btn-retiro" data-retiro="NORMAL">Normal (7 días)</button>
+      <button type="button" class="btn-retiro" data-retiro="LABORATORIO">Laboratorio (15 días)</button>
+      <button type="button" class="btn-retiro" data-retiro="URGENTE">Urgente (3 días)</button>
     </div>
     <input type="hidden" name="retiro_tipo" id="retiro_tipo">
 
-    <!-- Datos ocultos para mantener compatibilidad -->
-    <input type="hidden" name="total" value="">
-    <input type="hidden" name="sena" value="">
-    <input type="hidden" name="saldo" value="">
-    <input type="hidden" name="forma_pago" value="">
-    <input type="hidden" name="otro_concepto" value="">
-    <input type="hidden" name="descripcion" value="">
-    <input type="hidden" name="tipo" value="">
-    <input type="hidden" name="od_esf" value="">
-    <input type="hidden" name="od_cil" value="">
-    <input type="hidden" name="od_eje" value="">
-    <input type="hidden" name="oi_esf" value="">
-    <input type="hidden" name="oi_cil" value="">
-    <input type="hidden" name="oi_eje" value="">
-    <input type="hidden" name="add" value="">
-    <input type="hidden" name="vendedor" value="Ingreso rápido">
-
-    <input type="submit" value="Guardar">
+    <button type="submit">Guardar</button>
   </form>
 
-  <p id="mensaje"></p>
+  <div id="mensaje"></div>
 
   <script>
-    const url = 'https://script.google.com/macros/s/AKfycbw7mbdVgGDvKbLVWNvR0Qx_Z4XxJagghTd0kq4nWC4NeowqxoUEjJWXjVLNvcRpeBDDWQ/exec';
+    const url = "https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec";
 
-    const form = document.getElementById('formulario');
-    const mensaje = document.getElementById('mensaje');
-    const hoy = new Date();
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const yy = String(hoy.getFullYear()).slice(-2);
-    document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+    const form = document.getElementById("formulario");
+    const mensaje = document.getElementById("mensaje");
+    const fechaHoy = new Date();
+    const fechaInput = document.getElementById("fecha");
 
-    function setRetiro(tipo) {
-      document.getElementById('retiro_tipo').value = tipo;
-    }
+    const pad = (n) => n.toString().padStart(2, "0");
+    fechaInput.value = `${pad(fechaHoy.getDate())}/${pad(fechaHoy.getMonth()+1)}/${fechaHoy.getFullYear().toString().slice(-2)}`;
 
-    form.addEventListener('submit', async (e) => {
+    // Botones tipo de retiro
+    document.querySelectorAll('.btn-retiro').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('retiro_tipo').value = btn.dataset.retiro;
+      });
+    });
+
+    // Buscar nombre por DNI
+    document.getElementById('dni').addEventListener('blur', async () => {
+      const dni = document.getElementById('dni').value.trim();
+      if (dni) {
+        const res = await fetch(`${url}?buscarDNI=${dni}`);
+        const nombre = await res.text();
+        if (!nombre.startsWith("ERROR")) {
+          document.getElementById('nombre').value = nombre;
+        }
+      }
+    });
+
+    // Buscar armazón por número
+    document.getElementById('numero_armazon').addEventListener('blur', async () => {
+      const num = document.getElementById('numero_armazon').value.trim();
+      if (num) {
+        const res = await fetch(`${url}?buscarArmazon=${num}`);
+        const modelo = await res.text();
+        if (!modelo.startsWith("ERROR")) {
+          document.getElementById('armazon_detalle').value = modelo;
+        }
+      }
+    });
+
+    // Obtener próximo número automáticamente
+    window.addEventListener('load', async () => {
+      const res = await fetch(`${url}?proximoTrabajo=1`);
+      const numero = await res.text();
+      document.getElementById("numero_trabajo").value = numero;
+    });
+
+    // Envío del formulario
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const data = new FormData(form);
-      const params = new URLSearchParams();
-      data.forEach((value, key) => {
-        params.append(key, value.toUpperCase()); // Mayúsculas
-      });
+      const formData = new FormData(form);
+      const data = new URLSearchParams(formData);
 
       try {
-        const res = await fetch(`${url}?${params.toString()}`);
+        const res = await fetch(url, {
+          method: "POST",
+          body: data,
+        });
+
         const text = await res.text();
         mensaje.textContent = text;
-        mensaje.className = text.includes('✅') ? 'ok' : 'error';
-        if (text.includes('✅')) {
+        mensaje.style.color = text.includes("✅") ? "green" : "red";
+
+        if (text.includes("✅")) {
           form.reset();
-          document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+          fechaInput.value = `${pad(fechaHoy.getDate())}/${pad(fechaHoy.getMonth()+1)}/${fechaHoy.getFullYear().toString().slice(-2)}`;
         }
       } catch (err) {
-        mensaje.textContent = '❌ Error al enviar';
-        mensaje.className = 'error';
+        mensaje.textContent = "❌ Error de conexión";
+        mensaje.style.color = "red";
       }
     });
   </script>
