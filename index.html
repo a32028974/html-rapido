@@ -12,15 +12,15 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido V3-7 9.41</h2>
+  <h2>Ingreso rápido V 3-7 9.49</h2>
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
     <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
+    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
     <input type="text" name="dni" id="dni" placeholder="DNI" required>
     <input type="text" name="nombre" id="nombre" placeholder="Apellido" required>
     <input type="text" name="cristal" placeholder="Tipo de cristal" required>
-    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
 
     <!-- Campos ocultos para compatibilidad con el script -->
     <input type="hidden" name="total" value="">
@@ -45,7 +45,7 @@
   <p id="mensaje"></p>
 
   <script>
-    const urlBase = 'https://script.google.com/macros/s/AKfycbwwGQrTUeJGdr45ClpwU-ejWMFj5lZVY0OinyqF0Xu46j8S7xuvD6fgyGTZSSYH2k3fag/exec';
+    const urlBase = 'https://script.google.com/macros/s/AKfycbxiBnqOWqG4qNluMDhaGztWAG4MOBENkF3EToBJ_pTfKtxf5liyGuuOZWxvplBe1ZCCnA/exec';
 
     const hoy = new Date();
     const dd = String(hoy.getDate()).padStart(2, '0');
