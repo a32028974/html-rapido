@@ -91,6 +91,21 @@ function calcularTotal() {
   document.getElementById('saldo').value = `$${saldo}`;
 }
 
+// Rellenar select de graduaciones
+function llenarSelect(id, min, max, step) {
+  const select = document.getElementById(id);
+  for (let v = min; v <= max; v += step) {
+    const option = document.createElement('option');
+    option.value = option.textContent = v.toFixed(2);
+    select.appendChild(option);
+  }
+}
+
+llenarSelect('od_esf', -24.00, 24.00, 0.25);
+llenarSelect('oi_esf', -24.00, 24.00, 0.25);
+llenarSelect('od_cil', -7.00, 7.00, 0.25);
+llenarSelect('oi_cil', -7.00, 7.00, 0.25);
+
 // Obtener número de trabajo
 async function generarProximoNumeroTrabajo() {
   try {
