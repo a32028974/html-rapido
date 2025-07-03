@@ -11,12 +11,10 @@ const mm = String(hoy.getMonth() + 1).padStart(2, '0');
 const yy = String(hoy.getFullYear()).slice(-2);
 fechaInput.value = `${dd}/${mm}/${yy}`;
 
-// Mostrar/Ocultar Spinner
 function mostrarSpinner(mostrar) {
   spinner.style.display = mostrar ? 'block' : 'none';
 }
 
-// Buscar nombre por DNI
 const dniInput = document.getElementById('dni');
 dniInput.addEventListener('blur', async () => {
   const dni = dniInput.value.trim();
@@ -34,7 +32,6 @@ dniInput.addEventListener('blur', async () => {
   mostrarSpinner(false);
 });
 
-// Buscar armazón
 const armazonInput = document.getElementById('numero_armazon');
 armazonInput.addEventListener('blur', async () => {
   const codigo = armazonInput.value.trim();
@@ -42,9 +39,13 @@ armazonInput.addEventListener('blur', async () => {
   mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarArmazon=${codigo}`);
-    const text = await res.text();
-    if (!text.includes('ERROR')) {
-      document.getElementById('armazon_detalle').value = text;
+    const data = await res.json();
+    if (data && data.modelo && data.precio) {
+      document.getElementById('armazon_detalle').value = data.modelo;
+      const precioArmazonField = document.getElementById('precio_armazon');
+      precioArmazonField.removeAttribute('readonly');
+      precioArmazonField.value = `$${parseInt(data.precio) || 0}`;
+      calcularTotal();
     }
   } catch (err) {
     console.error('Error buscando armazón:', err);
@@ -52,7 +53,6 @@ armazonInput.addEventListener('blur', async () => {
   mostrarSpinner(false);
 });
 
-// Buscar precio del cristal
 const cristalInput = document.getElementById('cristal');
 cristalInput.addEventListener('blur', async () => {
   const tipo = cristalInput.value.trim();
@@ -73,7 +73,6 @@ cristalInput.addEventListener('blur', async () => {
   mostrarSpinner(false);
 });
 
-// Calcular Total y Saldo
 const senaInput = document.getElementById('sena');
 senaInput.addEventListener('input', calcularTotal);
 
@@ -87,7 +86,6 @@ function calcularTotal() {
   document.getElementById('saldo').value = `$${saldo}`;
 }
 
-// Rellenar select de graduaciones
 function llenarSelect(id, min, max, step) {
   const select = document.getElementById(id);
   if (!select) return;
@@ -103,7 +101,6 @@ llenarSelect('oi_esf', -24.00, 24.00, 0.25);
 llenarSelect('od_cil', -7.00, 7.00, 0.25);
 llenarSelect('oi_cil', -7.00, 7.00, 0.25);
 
-// Obtener número de trabajo
 async function generarProximoNumeroTrabajo() {
   try {
     const res = await fetch(`${url}?proximoTrabajo=1`);
@@ -114,7 +111,6 @@ async function generarProximoNumeroTrabajo() {
   }
 }
 
-// Evitar envío con Enter
 form.addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
     const tag = e.target.tagName.toLowerCase();
@@ -124,7 +120,6 @@ form.addEventListener('keydown', function (e) {
   }
 });
 
-// Enviar formulario solo al hacer click en Guardar
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   mensaje.textContent = '';
