@@ -47,16 +47,22 @@ form.addEventListener('submit', async (e) => {
 document.getElementById('numero_armazon').addEventListener('blur', async () => {
   const num = document.getElementById('numero_armazon').value.trim();
   if (!num) return;
+
+  mostrarSpinner(true); // 👈 aparece el spinner
+
   try {
     const res = await fetch(`${url}?buscarArmazon=${num}`);
     const text = await res.text();
-    if (text && !text.includes('ERROR')) {
+    if (text && !text.includes("ERROR")) {
       document.getElementById('armazon_detalle').value = text;
     }
   } catch (err) {
     console.error('Error buscando armazón', err);
   }
+
+  mostrarSpinner(false); // 👈 se oculta el spinner
 });
+
 
 document.getElementById('dni').addEventListener('blur', async () => {
   const dni = document.getElementById('dni').value.trim();
