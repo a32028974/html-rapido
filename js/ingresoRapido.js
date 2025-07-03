@@ -45,7 +45,9 @@ armazonInput.addEventListener('blur', async () => {
     const data = await res.json();
     if (data.detalle && data.precio) {
       document.getElementById('armazon_detalle').value = data.detalle;
-      document.getElementById('precio_armazon').value = `$${parseInt(data.precio)}`;
+      const precioArmazonField = document.getElementById('precio_armazon');
+      precioArmazonField.removeAttribute('readonly');
+      precioArmazonField.value = `$${parseInt(data.precio)}`;
       calcularTotal();
     }
   } catch (err) {
@@ -64,7 +66,9 @@ cristalInput.addEventListener('blur', async () => {
     const res = await fetch(`${url}?buscarCristal=${tipo}`);
     const precio = await res.text();
     if (!precio.includes('ERROR')) {
-      document.getElementById('precio_cristal').value = `$${parseInt(precio)}`;
+      const precioCristalField = document.getElementById('precio_cristal');
+      precioCristalField.removeAttribute('readonly');
+      precioCristalField.value = `$${parseInt(precio)}`;
       calcularTotal();
     }
   } catch (err) {
@@ -98,7 +102,17 @@ async function generarProximoNumeroTrabajo() {
   }
 }
 
-// Enviar formulario
+// Evitar envío con Enter
+form.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    const tag = e.target.tagName.toLowerCase();
+    if (tag !== 'textarea') {
+      e.preventDefault();
+    }
+  }
+});
+
+// Enviar formulario solo al hacer click en Guardar
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   mensaje.textContent = '';
