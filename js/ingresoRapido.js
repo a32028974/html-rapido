@@ -3,6 +3,8 @@ const url = 'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-
 const form = document.getElementById('formulario');
 const mensaje = document.getElementById('mensaje');
 const spinner = document.getElementById('spinner');
+const printBtn = document.getElementById('btn-imprimir');
+const clearBtn = document.getElementById('btn-limpiar');
 
 const fechaInput = document.getElementById('fecha');
 const hoy = new Date();
@@ -40,13 +42,13 @@ armazonInput.addEventListener('blur', async () => {
   try {
     const res = await fetch(`${url}?buscarArmazon=${codigo}`);
     const data = await res.json();
-    if (data && data.modelo && data.precio) {
+    if (data && data.modelo) {
       document.getElementById('armazon_detalle').value = data.modelo;
-      const precioArmazonField = document.getElementById('precio_armazon');
-      precioArmazonField.removeAttribute('readonly');
-      precioArmazonField.value = `$${parseInt(data.precio) || 0}`;
-      calcularTotal();
     }
+    const precioArmazonField = document.getElementById('precio_armazon');
+    precioArmazonField.removeAttribute('readonly');
+    precioArmazonField.value = data.precio ? `$${parseInt(data.precio) || 0}` : '';
+    calcularTotal();
   } catch (err) {
     console.error('Error buscando armazón:', err);
   }
@@ -61,12 +63,10 @@ cristalInput.addEventListener('blur', async () => {
   try {
     const res = await fetch(`${url}?buscarCristal=${tipo}`);
     const precio = await res.text();
-    if (!precio.includes('ERROR')) {
-      const precioCristalField = document.getElementById('precio_cristal');
-      precioCristalField.removeAttribute('readonly');
-      precioCristalField.value = `$${parseInt(precio) || 0}`;
-      calcularTotal();
-    }
+    const precioCristalField = document.getElementById('precio_cristal');
+    precioCristalField.removeAttribute('readonly');
+    precioCristalField.value = `$${parseInt(precio) || 0}`;
+    calcularTotal();
   } catch (err) {
     console.error('Error buscando precio cristal:', err);
   }
@@ -135,18 +135,39 @@ form.addEventListener('submit', async (e) => {
   try {
     const res = await fetch(url, { method: 'POST', body: mayusForm });
     const text = await res.text();
-    mensaje.textContent = text;
-    mensaje.className = text.includes('✅') ? 'ok' : 'error';
     if (text.includes('✅')) {
-      form.reset();
-      fechaInput.value = `${dd}/${mm}/${yy}`;
+      Swal.fire({
+        icon: 'success',
+        title: 'Trabajo guardado',
+        text: text,
+        confirmButtonText: 'OK'
+      });
       generarProximoNumeroTrabajo();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: text
+      });
     }
   } catch (err) {
-    mensaje.textContent = '❌ Error de red o conexión';
-    mensaje.className = 'error';
+    Swal.fire({
+      icon: 'error',
+      title: 'Error de red o conexión',
+      text: err.message
+    });
   }
   mostrarSpinner(false);
+});
+
+printBtn.addEventListener('click', () => {
+  window.print();
+});
+
+clearBtn.addEventListener('click', () => {
+  form.reset();
+  fechaInput.value = `${dd}/${mm}/${yy}`;
+  generarProximoNumeroTrabajo();
 });
 
 generarProximoNumeroTrabajo();
