@@ -61,16 +61,21 @@ document.getElementById('numero_armazon').addEventListener('blur', async () => {
 document.getElementById('dni').addEventListener('blur', async () => {
   const dni = document.getElementById('dni').value.trim();
   if (!dni) return;
+  mostrarSpinner(true); // 👈 Mostrar mientras busca
+
   try {
     const res = await fetch(`${url}?buscarDNI=${dni}`);
     const nombre = await res.text();
-    if (nombre && !nombre.includes('ERROR')) {
+    if (nombre && !nombre.includes("ERROR")) {
       document.getElementById('nombre').value = nombre;
     }
   } catch (err) {
     console.error('Error buscando DNI', err);
   }
+
+  mostrarSpinner(false); // 👈 Ocultar después de recibir respuesta
 });
+
 
 async function generarProximoNumeroTrabajo() {
   try {
@@ -81,5 +86,11 @@ async function generarProximoNumeroTrabajo() {
     console.error('Error al obtener número de trabajo', err);
   }
 }
+
+function mostrarSpinner(mostrar) {
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = mostrar ? 'block' : 'none';
+}
+
 
 generarProximoNumeroTrabajo();
