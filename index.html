@@ -2,26 +2,51 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ingreso rápido</title>
+  <title>Ingreso rápido de trabajo</title>
   <style>
-    body { font-family: Arial; max-width: 400px; margin: auto; padding: 20px; }
+    body { font-family: Arial; max-width: 500px; margin: auto; padding: 20px; }
     input { width: 100%; margin-bottom: 10px; padding: 8px; font-size: 16px; }
     #mensaje { font-weight: bold; margin-top: 10px; }
     .ok { color: green; }
     .error { color: red; }
+
+    #spinner { display: none; text-align: center; margin-bottom: 10px; }
+    #spinner img { width: 40px; height: 40px; animation: rotar 1s linear infinite; }
+    @keyframes rotar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    #logo { width: 80px; float: left; margin-bottom: 10px; }
+    .row { display: flex; gap: 10px; }
+    .row input { flex: 1; }
   </style>
 </head>
 <body>
-  <h2>V3-7 11.53 Ingreso rápido</h2>
+  <img id="logo" src="img/logo-optica.png" alt="Óptica Cristal">
+  <h2 style="clear: both;">Ingreso rápido v3-7 12.21 </h2>
+
+  <div id="spinner">
+    <img src="img/anteojos-spinner.png" alt="Cargando...">
+  </div>
 
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
     <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
     <input type="text" name="dni" id="dni" placeholder="DNI" required>
     <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
-    <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
+
+    <div class="row">
+      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
+      <input type="number" name="precio_cristal" id="precio_cristal" placeholder="$ Cristal">
+    </div>
+
+    <div class="row">
+      <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
+      <input type="number" name="precio_armazon" id="precio_armazon" placeholder="$ Armazón">
+    </div>
+
     <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón">
+    <input type="text" name="vendedor" id="vendedor" placeholder="Vendedor" required>
+
+    <p><strong>Total: $<span id="total_mostrado">0</span></strong></p>
 
     <!-- Campos ocultos -->
     <input type="hidden" name="total">
@@ -38,7 +63,6 @@
     <input type="hidden" name="oi_cil">
     <input type="hidden" name="oi_eje">
     <input type="hidden" name="add">
-    <input type="hidden" name="vendedor" value="Ingreso rápido">
 
     <input type="submit" value="Guardar">
   </form>
@@ -46,7 +70,10 @@
   <p id="mensaje"></p>
 
   <script>
-    const url = 'https://script.google.com/macros/s/AKfycbwryrV5XQCRw2XqbbKocZ4MY3coDrFkbOtLkZmrJpcEq2gOPS80DVTj8QiXDn9cpfgJ6g/exec';
+    const url = 'https://script.google.com/macros/s/AKfycbwwGQrTUeJGdr45ClpwU-ejWMFj5lZVY0OinyqF0Xu46j8S7xuvD6fgyGTZSSYH2k3fag/exec';
+    const spinner = document.getElementById('spinner');
+    const mensaje = document.getElementById('mensaje');
+    const form = document.getElementById('formulario');
 
     const hoy = new Date();
     const dd = String(hoy.getDate()).padStart(2, '0');
@@ -55,27 +82,23 @@
     const fechaHoy = `${dd}/${mm}/${yy}`;
     document.getElementById('fecha').value = fechaHoy;
 
-    const form = document.getElementById('formulario');
-    const mensaje = document.getElementById('mensaje');
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       mensaje.textContent = "";
       mensaje.className = "";
+      spinner.style.display = "block";
 
-      const formData = new FormData(form);
-      const mayusForm = new FormData();
+      const precioCristal = Number(document.getElementById('precio_cristal').value) || 0;
+      const precioArmazon = Number(document.getElementById('precio_armazon').value) || 0;
+      const total = precioCristal + precioArmazon;
+      document.querySelector('input[name="total"]').value = total;
 
-      for (const [key, value] of formData.entries()) {
-        mayusForm.append(key, value.toUpperCase());
-      }
+      const data = new FormData(form);
+      const formData = new FormData();
+      data.forEach((value, key) => formData.append(key, value.toUpperCase()));
 
       try {
-        const res = await fetch(url, {
-          method: 'POST',
-          body: mayusForm
-        });
-
+        const res = await fetch(url, { method: 'POST', body: formData });
         const text = await res.text();
         mensaje.textContent = text;
         mensaje.className = text.includes('✅') ? 'ok' : 'error';
@@ -84,32 +107,49 @@
           form.reset();
           document.getElementById('fecha').value = fechaHoy;
           generarProximoNumeroTrabajo();
+          setTimeout(() => mensaje.textContent = "", 3000);
         }
       } catch (err) {
         mensaje.textContent = "❌ Error de red o conexión";
         mensaje.className = "error";
+      } finally {
+        spinner.style.display = "none";
       }
     });
 
     document.getElementById('numero_armazon').addEventListener('blur', async () => {
       const num = document.getElementById('numero_armazon').value.trim();
       if (!num) return;
+      spinner.style.display = "block";
       const res = await fetch(`${url}?buscarArmazon=${num}`);
       const text = await res.text();
       if (text && !text.includes("ERROR")) {
         document.getElementById('armazon_detalle').value = text;
       }
+      spinner.style.display = "none";
     });
 
     document.getElementById('dni').addEventListener('blur', async () => {
       const dni = document.getElementById('dni').value.trim();
       if (!dni) return;
+      spinner.style.display = "block";
       const res = await fetch(`${url}?buscarDNI=${dni}`);
       const nombre = await res.text();
       if (nombre && !nombre.includes("ERROR")) {
         document.getElementById('nombre').value = nombre;
       }
+      spinner.style.display = "none";
     });
+
+    function actualizarTotal() {
+      const precioCristal = Number(document.getElementById('precio_cristal').value) || 0;
+      const precioArmazon = Number(document.getElementById('precio_armazon').value) || 0;
+      const total = precioCristal + precioArmazon;
+      document.getElementById('total_mostrado').textContent = total;
+    }
+
+    document.getElementById('precio_cristal').addEventListener('input', actualizarTotal);
+    document.getElementById('precio_armazon').addEventListener('input', actualizarTotal);
 
     async function generarProximoNumeroTrabajo() {
       try {
