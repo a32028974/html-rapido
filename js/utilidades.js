@@ -1,3 +1,4 @@
 export function mostrarSpinner(visible) {
-  document.getElementById('spinner').style.display = visible ? 'block' : 'none';
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = visible ? 'block' : 'none';
 }
