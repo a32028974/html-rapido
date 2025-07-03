@@ -1,3 +1,5 @@
+import { mostrarSpinner } from './utilidades.js';
+
 export function buscarTrabajo() {
   const numero = document.getElementById('numeroTrabajo').value.trim();
   const dni = document.getElementById('dniCliente').value.trim();
