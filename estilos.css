@@ -1,9 +1,16 @@
 body {
   font-family: Arial;
-  max-width: 380px;
+  max-width: 900px;
   margin: auto;
   padding: 15px;
   font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+form {
+  flex: 1 1 400px;
 }
 
 input {
@@ -24,7 +31,8 @@ input {
 }
 
 .flex-group input:last-child {
-  max-width: 60px;
+  max-width: 80px;
+  text-align: right;
 }
 
 .loader {
@@ -68,4 +76,45 @@ input {
 
 .titulo {
   font-size: 16px;
+}
+
+.receta {
+  flex: 1 1 300px;
+  margin-top: 15px;
+}
+
+.receta h3 {
+  margin: 5px 0 0;
+}
+
+.receta .fila {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.receta .fila input {
+  flex: 1;
+  text-align: center;
+}
+
+.total-boxes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.total-boxes > div {
+  flex: 1;
+  text-align: center;
+}
+
+.total-boxes label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.total-boxes input {
+  text-align: center;
 }
