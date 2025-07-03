@@ -6,11 +6,11 @@
   <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <h2 class="titulo">V 3-7 17.44 Ingreso rápido</h2>
+  <h2 class="titulo">V 3-7 18.28 Ingreso rápido</h2>
 
-  <div id="spinner" class="spinner">
+  <div class="spinner" id="spinner">
     <div class="loader"></div>
-    <p class="spinner-text">Cargando...</p>
+    <div class="spinner-text">Cargando...</div>
   </div>
 
   <form id="formulario">
@@ -21,42 +21,63 @@
 
     <div class="flex-group">
       <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="text" name="precio_cristal" id="precio_cristal" placeholder="$" />
+      <input type="text" id="precio_cristal" readonly />
     </div>
 
     <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
 
     <div class="flex-group">
       <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="text" name="precio_armazon" id="precio_armazon" placeholder="$" />
+      <input type="text" id="precio_armazon" readonly />
     </div>
 
-    <div class="flex-group">
-      <input type="text" name="total" id="total" placeholder="Total" readonly />
-      <input type="text" name="sena" id="sena" placeholder="Seña" />
-      <input type="text" name="saldo" id="saldo" placeholder="Saldo" readonly />
-    </div>
-
-    <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor" required />
-
-    <!-- Campos adicionales visibles -->
-    <input type="text" name="forma_pago" placeholder="Forma de pago" />
     <input type="text" name="otro_concepto" placeholder="Otro concepto" />
     <input type="text" name="descripcion" placeholder="Descripción" />
     <input type="text" name="tipo" placeholder="Tipo" />
-    <input type="text" name="od_esf" placeholder="OD ESF" />
-    <input type="text" name="od_cil" placeholder="OD CIL" />
-    <input type="text" name="od_eje" placeholder="OD EJE" />
-    <input type="text" name="oi_esf" placeholder="OI ESF" />
-    <input type="text" name="oi_cil" placeholder="OI CIL" />
-    <input type="text" name="oi_eje" placeholder="OI EJE" />
-    <input type="text" name="add" placeholder="ADD" />
+
+    <div class="receta">
+      <h3>OD</h3>
+      <div class="fila">
+        <input type="text" name="od_esf" placeholder="ESF" />
+        <input type="text" name="od_cil" placeholder="CIL" />
+        <input type="text" name="od_eje" placeholder="EJE" />
+      </div>
+
+      <h3>OI</h3>
+      <div class="fila">
+        <input type="text" name="oi_esf" placeholder="ESF" />
+        <input type="text" name="oi_cil" placeholder="CIL" />
+        <input type="text" name="oi_eje" placeholder="EJE" />
+      </div>
+
+      <div class="fila">
+        <input type="text" name="add" placeholder="ADD" />
+      </div>
+    </div>
+
+    <div class="total-boxes">
+      <div>
+        <label for="total">TOTAL</label>
+        <input type="text" id="total" name="total" readonly />
+      </div>
+      <div>
+        <label for="sena">SEÑA</label>
+        <input type="text" id="sena" name="sena" />
+      </div>
+      <div>
+        <label for="saldo">SALDO</label>
+        <input type="text" id="saldo" name="saldo" readonly />
+      </div>
+    </div>
+
+    <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor" />
+    <input type="text" name="forma_pago" placeholder="Forma de pago" />
 
     <input type="submit" value="Guardar" />
   </form>
 
   <p id="mensaje"></p>
 
-  <script type="module" src="js/ingresoRapido.js"></script>
+  <script type="module" src="./js/ingresoRapido.js"></script>
 </body>
 </html>
