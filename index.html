@@ -39,7 +39,7 @@
 <body>
   <img src="logo.png" alt="Óptica Cristal" class="logo">
 
-  <h2>V 3-7 12.56 Ingreso de Trabajo</h2>
+  <h2>V 3-7 15.26 Ingreso de Trabajo</h2>
 
   <form id="formulario">
     <label>Fecha de encargo (hoy)</label>
@@ -152,5 +152,27 @@
       }
     });
   </script>
+  <div id="spinner" style="display: none; text-align: center; margin-top: 20px;">
+  <div class="loader"></div>
+  <p>Buscando datos...</p>
+</div>
+
+<style>
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
 </body>
 </html>
