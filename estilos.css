@@ -13,7 +13,8 @@ form {
   flex: 1 1 400px;
 }
 
-input {
+input,
+select {
   width: 100%;
   margin-bottom: 8px;
   padding: 6px;
@@ -26,11 +27,8 @@ input {
   gap: 5px;
 }
 
-.flex-group input {
-  flex: 1;
-}
-
-.flex-group input:last-child {
+.flex-group input:last-child,
+.flex-group select:last-child {
   max-width: 80px;
   text-align: right;
 }
@@ -76,6 +74,7 @@ input {
 
 .titulo {
   font-size: 16px;
+  width: 100%;
 }
 
 .receta {
@@ -93,7 +92,8 @@ input {
   margin-bottom: 6px;
 }
 
-.receta .fila input {
+.receta .fila input,
+.receta .fila select {
   flex: 1;
   text-align: center;
 }
@@ -117,4 +117,16 @@ input {
 
 .total-boxes input {
   text-align: center;
+}
+
+.acciones {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.acciones button {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
 }
