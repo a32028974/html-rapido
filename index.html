@@ -1,178 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Ingreso de Trabajo</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      margin: 6px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-    #mensaje {
-      margin-top: 10px;
-      font-weight: bold;
-      color: red;
-    }
-    .btn-retiro {
-      width: 30%;
-      display: inline-block;
-      margin: 5px 1%;
-      padding: 10px;
-      font-size: 14px;
-    }
-    .logo {
-      width: 120px;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Óptica Cristal - Consulta de Trabajos</title>
+  <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <img src="logo.png" alt="Óptica Cristal" class="logo">
+  <h2>Consultar Trabajo</h2>
 
-  <h2>V 3-7 15.26 Ingreso de Trabajo</h2>
+  <label for="numeroTrabajo">Número de Trabajo:</label>
+  <input type="text" id="numeroTrabajo" placeholder="Ej: 100001" />
 
-  <form id="formulario">
-    <label>Fecha de encargo (hoy)</label>
-    <input type="text" id="fecha" name="fecha_encargo" readonly>
+  <label for="dniCliente">DNI del Cliente:</label>
+  <input type="text" id="dniCliente" placeholder="Ej: 12345678" />
 
-    <label>Número de trabajo</label>
-    <input type="text" id="numero_trabajo" name="numero_trabajo" required>
+  <button id="btnConsultar">Consultar</button>
 
-    <label>DNI</label>
-    <input type="text" id="dni" name="dni" required>
+  <div id="spinner">
+    <div class="loader"></div>
+    <p>Buscando datos...</p>
+  </div>
 
-    <label>Apellido y Nombre</label>
-    <input type="text" id="nombre" name="nombre">
+  <div id="resultado"></div>
 
-    <label>Tipo de cristal</label>
-    <input type="text" id="cristal" name="cristal">
-
-    <label>Número de armazón (opcional)</label>
-    <input type="text" id="numero_armazon" name="numero_armazon">
-
-    <label>Modelo de armazón</label>
-    <input type="text" id="armazon_detalle" name="armazon_detalle">
-
-    <label>Tipo de retiro</label>
-    <div>
-      <button type="button" class="btn-retiro" data-retiro="NORMAL">Normal (7 días)</button>
-      <button type="button" class="btn-retiro" data-retiro="LABORATORIO">Laboratorio (15 días)</button>
-      <button type="button" class="btn-retiro" data-retiro="URGENTE">Urgente (3 días)</button>
-    </div>
-    <input type="hidden" name="retiro_tipo" id="retiro_tipo">
-
-    <button type="submit">Guardar</button>
-  </form>
-
-  <div id="mensaje"></div>
-
-  <script>
-    const url = "https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec";
-
-    const form = document.getElementById("formulario");
-    const mensaje = document.getElementById("mensaje");
-    const fechaHoy = new Date();
-    const fechaInput = document.getElementById("fecha");
-
-    const pad = (n) => n.toString().padStart(2, "0");
-    fechaInput.value = `${pad(fechaHoy.getDate())}/${pad(fechaHoy.getMonth()+1)}/${fechaHoy.getFullYear().toString().slice(-2)}`;
-
-    // Botones tipo de retiro
-    document.querySelectorAll('.btn-retiro').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.getElementById('retiro_tipo').value = btn.dataset.retiro;
-      });
-    });
-
-    // Buscar nombre por DNI
-    document.getElementById('dni').addEventListener('blur', async () => {
-      const dni = document.getElementById('dni').value.trim();
-      if (dni) {
-        const res = await fetch(`${url}?buscarDNI=${dni}`);
-        const nombre = await res.text();
-        if (!nombre.startsWith("ERROR")) {
-          document.getElementById('nombre').value = nombre;
-        }
-      }
-    });
-
-    // Buscar armazón por número
-    document.getElementById('numero_armazon').addEventListener('blur', async () => {
-      const num = document.getElementById('numero_armazon').value.trim();
-      if (num) {
-        const res = await fetch(`${url}?buscarArmazon=${num}`);
-        const modelo = await res.text();
-        if (!modelo.startsWith("ERROR")) {
-          document.getElementById('armazon_detalle').value = modelo;
-        }
-      }
-    });
-
-    // Obtener próximo número automáticamente
-    window.addEventListener('load', async () => {
-      const res = await fetch(`${url}?proximoTrabajo=1`);
-      const numero = await res.text();
-      document.getElementById("numero_trabajo").value = numero;
-    });
-
-    // Envío del formulario
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-      const data = new URLSearchParams(formData);
-
-      try {
-        const res = await fetch(url, {
-          method: "POST",
-          body: data,
-        });
-
-        const text = await res.text();
-        mensaje.textContent = text;
-        mensaje.style.color = text.includes("✅") ? "green" : "red";
-
-        if (text.includes("✅")) {
-          form.reset();
-          fechaInput.value = `${pad(fechaHoy.getDate())}/${pad(fechaHoy.getMonth()+1)}/${fechaHoy.getFullYear().toString().slice(-2)}`;
-        }
-      } catch (err) {
-        mensaje.textContent = "❌ Error de conexión";
-        mensaje.style.color = "red";
-      }
-    });
+  <script type="module">
+    import { buscarTrabajo } from './js/consultarTrabajo.js';
+    document.getElementById('btnConsultar').addEventListener('click', buscarTrabajo);
   </script>
-  <div id="spinner" style="display: none; text-align: center; margin-top: 20px;">
-  <div class="loader"></div>
-  <p>Buscando datos...</p>
-</div>
-
-<style>
-  .loader {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-</style>
-
 </body>
 </html>
