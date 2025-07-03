@@ -12,18 +12,18 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido v3-7 10.27 </h2>
+  <h2>V3-7 10.43 Ingreso rápido</h2>
 
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
-    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
     <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
     <input type="text" name="dni" id="dni" placeholder="DNI" required>
     <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
     <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
+    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón">
 
-    <!-- Campos ocultos -->
+    <!-- Ocultos -->
     <input type="hidden" name="total">
     <input type="hidden" name="sena">
     <input type="hidden" name="saldo">
@@ -54,7 +54,6 @@
     const yy = String(hoy.getFullYear()).slice(-2);
     const fechaHoy = `${dd}/${mm}/${yy}`;
     document.getElementById('fecha').value = fechaHoy;
-    document.getElementById('version').textContent = `${dd}.${mm}.${yy} ${String(hoy.getHours()).padStart(2, '0')}.${String(hoy.getMinutes()).padStart(2, '0')}`;
 
     const form = document.getElementById('formulario');
     const mensaje = document.getElementById('mensaje');
@@ -85,22 +84,24 @@
       }
     });
 
-    // Autocompletar armazón
     document.getElementById('numero_armazon').addEventListener('blur', async () => {
       const num = document.getElementById('numero_armazon').value.trim();
       if (!num) return;
       const res = await fetch(`${url}?buscarArmazon=${num}`);
       const text = await res.text();
-      document.getElementById('armazon_detalle').value = text;
+      if (text && !text.includes("ERROR")) {
+        document.getElementById('armazon_detalle').value = text;
+      }
     });
 
-    // Autocompletar nombre por DNI
     document.getElementById('dni').addEventListener('blur', async () => {
       const dni = document.getElementById('dni').value.trim();
       if (!dni) return;
       const res = await fetch(`${url}?buscarDNI=${dni}`);
       const nombre = await res.text();
-      if (nombre) document.getElementById('nombre').value = nombre;
+      if (nombre && !nombre.includes("ERROR")) {
+        document.getElementById('nombre').value = nombre;
+      }
     });
 
     async function generarProximoNumeroTrabajo() {
