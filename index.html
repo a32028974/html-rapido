@@ -12,84 +12,115 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido V2-7 19.25</h2>
- <form id="formulario">
-  <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
-  <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
-  <input type="text" name="dni" placeholder="DNI" required>
-  <input type="text" name="nombre" placeholder="Apellido" required>
-  <input type="text" name="cristal" placeholder="Tipo de cristal" required>
+  <h2>Ingreso rápido V3-7 9.41</h2>
+  <form id="formulario">
+    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
+    <input type="text" name="numero_trabajo" placeholder="Número de trabajo" required>
+    <input type="text" name="dni" id="dni" placeholder="DNI" required>
+    <input type="text" name="nombre" id="nombre" placeholder="Apellido" required>
+    <input type="text" name="cristal" placeholder="Tipo de cristal" required>
+    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
 
-  <div style="display: flex; gap: 10px;">
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón">
-    <button type="button" id="buscarArmazon">Actualizar</button>
-  </div>
+    <!-- Campos ocultos para compatibilidad con el script -->
+    <input type="hidden" name="total" value="">
+    <input type="hidden" name="sena" value="">
+    <input type="hidden" name="saldo" value="">
+    <input type="hidden" name="forma_pago" value="">
+    <input type="hidden" name="otro_concepto" value="">
+    <input type="hidden" name="descripcion" value="">
+    <input type="hidden" name="tipo" value="">
+    <input type="hidden" name="od_esf" value="">
+    <input type="hidden" name="od_cil" value="">
+    <input type="hidden" name="od_eje" value="">
+    <input type="hidden" name="oi_esf" value="">
+    <input type="hidden" name="oi_cil" value="">
+    <input type="hidden" name="oi_eje" value="">
+    <input type="hidden" name="add" value="">
+    <input type="hidden" name="vendedor" value="Ingreso rápido">
 
-  <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" required>
-  <input type="submit" value="Guardar">
-</form>
-
+    <input type="submit" value="Guardar">
+  </form>
 
   <p id="mensaje"></p>
 
- <script>
-  const urlBase = 'https://script.google.com/macros/s/AKfycbxiBnqOWqG4qNluMDhaGztWAG4MOBENkF3EToBJ_pTfKtxf5liyGuuOZWxvplBe1ZCCnA/exec';
+  <script>
+    const urlBase = 'https://script.google.com/macros/s/AKfycbwwGQrTUeJGdr45ClpwU-ejWMFj5lZVY0OinyqF0Xu46j8S7xuvD6fgyGTZSSYH2k3fag/exec';
 
-  // Insertar fecha de hoy automáticamente
-  const hoy = new Date();
-  const dd = String(hoy.getDate()).padStart(2, '0');
-  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-  const yy = String(hoy.getFullYear()).slice(-2);
-  document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+    const hoy = new Date();
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const yy = String(hoy.getFullYear()).slice(-2);
+    document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
 
-  const form = document.getElementById('formulario');
-  const mensaje = document.getElementById('mensaje');
+    const form = document.getElementById('formulario');
+    const mensaje = document.getElementById('mensaje');
 
-  // Enviar formulario
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const data = new FormData(form);
-    const params = new URLSearchParams();
-    data.forEach((value, key) => params.append(key, value));
+      const data = new FormData(form);
+      const params = new URLSearchParams();
+      data.forEach((value, key) => params.append(key, value));
 
-    const fullUrl = `${urlBase}?${params.toString()}`;
+      const fullUrl = `${urlBase}?${params.toString()}`;
 
-    try {
-      const res = await fetch(fullUrl);
-      const text = await res.text();
-      mensaje.textContent = text;
-      mensaje.className = text.includes('✅') ? 'ok' : 'error';
-      form.reset();
-      document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
-    } catch (error) {
-      mensaje.textContent = '❌ Error de red o conexión';
-      mensaje.className = 'error';
-    }
-  });
-
-  // Buscar modelo de armazón por número
-  document.getElementById('buscarArmazon').addEventListener('click', async () => {
-    const numero = document.getElementById('numero_armazon').value.trim();
-    if (!numero) return;
-
-    try {
-      const res = await fetch(`${urlBase}?buscarArmazon=${numero}`);
-      const texto = await res.text();
-
-      if (texto.trim()) {
-        document.getElementById('armazon_detalle').value = texto;
-        mensaje.textContent = '';
-      } else {
-        mensaje.textContent = '⚠️ Armazón no encontrado';
+      try {
+        const res = await fetch(fullUrl);
+        const text = await res.text();
+        mensaje.textContent = text;
+        mensaje.className = text.includes('✅') ? 'ok' : 'error';
+        form.reset();
+        document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+      } catch (error) {
+        mensaje.textContent = '❌ Error de red o conexión';
         mensaje.className = 'error';
       }
-    } catch (error) {
-      mensaje.textContent = '❌ Error al buscar el armazón';
-      mensaje.className = 'error';
-    }
-  });
-</script>
+    });
 
+    // Buscar armazón automáticamente
+    document.getElementById('numero_armazon').addEventListener('blur', async () => {
+      const numero = document.getElementById('numero_armazon').value.trim();
+      if (!numero) return;
+
+      try {
+        const res = await fetch(`${urlBase}?buscarArmazon=${numero}`);
+        const texto = await res.text();
+
+        if (texto.trim()) {
+          document.getElementById('armazon_detalle').value = texto;
+          mensaje.textContent = '';
+        } else {
+          mensaje.textContent = '⚠️ Armazón no encontrado';
+          mensaje.className = 'error';
+        }
+      } catch (error) {
+        mensaje.textContent = '❌ Error al buscar el armazón';
+        mensaje.className = 'error';
+      }
+    });
+
+    // Buscar nombre automáticamente al salir del campo DNI
+    document.getElementById('dni').addEventListener('blur', async () => {
+      const dni = document.getElementById('dni').value.trim();
+      if (!dni) return;
+
+      try {
+        const res = await fetch(`${urlBase}?buscarDNI=${dni}`);
+        const texto = await res.text();
+
+        if (texto.trim()) {
+          document.getElementById('nombre').value = texto;
+          mensaje.textContent = `🙋 Cliente encontrado: ${texto}`;
+          mensaje.className = 'ok';
+        } else {
+          mensaje.textContent = '';
+        }
+      } catch (error) {
+        mensaje.textContent = '❌ Error al buscar el DNI';
+        mensaje.className = 'error';
+      }
+    });
+  </script>
 </body>
 </html>
