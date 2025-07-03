@@ -3,29 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Óptica Cristal - Consulta de Trabajos</title>
+  <title>Óptica Cristal - Gestión de Trabajos</title>
   <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <h2>Consultar Trabajo</h2>
+  <h1>Óptica Cristal</h1>
 
-  <label for="numeroTrabajo">Número de Trabajo:</label>
-  <input type="text" id="numeroTrabajo" placeholder="Ej: 100001" />
+  <section>
+    <h2>Cargar nuevo trabajo</h2>
+    <input id="nombre" placeholder="Nombre del cliente" />
+    <input id="dni" placeholder="DNI" />
+    <input id="cristal" placeholder="Cristal pedido" />
+    <input id="detalle" placeholder="Detalle del trabajo" />
+    <input id="fecha_entrega" type="date" />
+    <button id="btnGuardar">Guardar trabajo</button>
+  </section>
 
-  <label for="dniCliente">DNI del Cliente:</label>
-  <input type="text" id="dniCliente" placeholder="Ej: 12345678" />
+  <hr />
 
-  <button id="btnConsultar">Consultar</button>
+  <section>
+    <h2>Consultar trabajo</h2>
+    <input id="numeroTrabajo" placeholder="N° de trabajo" />
+    <input id="dniCliente" placeholder="DNI del cliente" />
+    <button id="btnConsultar">Consultar</button>
+  </section>
 
   <div id="spinner">
     <div class="loader"></div>
-    <p>Buscando datos...</p>
+    <p>Procesando datos...</p>
   </div>
 
   <div id="resultado"></div>
 
   <script type="module">
+    import { guardarTrabajo } from './js/cargarTrabajo.js';
     import { buscarTrabajo } from './js/consultarTrabajo.js';
+
+    document.getElementById('btnGuardar').addEventListener('click', guardarTrabajo);
     document.getElementById('btnConsultar').addEventListener('click', buscarTrabajo);
   </script>
 </body>
