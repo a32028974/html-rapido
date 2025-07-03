@@ -1,5 +1,5 @@
-import { mostrarSpinner } from './utilidades.js';
-import { validarCamposTrabajo } from './validarTrabajo.js';
+import { mostrarSpinner, imprimirFormulario } from './utilidades.js';
+import { validarCamposTrabajo, activarValidacionesEnVivo } from './validarTrabajo.js';
 
 export function guardarTrabajo() {
   const nombre = document.getElementById('nombre').value.trim().toUpperCase();
@@ -9,7 +9,7 @@ export function guardarTrabajo() {
   const fecha_entrega = document.getElementById('fecha_entrega').value;
 
   if (!validarCamposTrabajo(nombre, dni, cristal)) {
-    alert('Completá todos los campos obligatorios correctamente.');
+    alert('Revisá los campos marcados.');
     return;
   }
 
@@ -20,7 +20,8 @@ export function guardarTrabajo() {
     dni,
     cristal,
     detalle,
-    fecha_entrega
+    fecha_entrega,
+    accion: 'guardar_imprimir_pdf'
   };
 
   const url = 'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec';
@@ -33,8 +34,12 @@ export function guardarTrabajo() {
     .then(response => response.json())
     .then(respuesta => {
       mostrarSpinner(false);
-      alert(respuesta.mensaje || 'Trabajo guardado con éxito');
-      limpiarCampos();
+      if (respuesta.ok) {
+        imprimirFormulario();  // abre impresión
+        limpiarCampos();
+      } else {
+        alert('Error en el servidor: ' + (respuesta.mensaje || 'Sin mensaje'));
+      }
     })
     .catch(error => {
       console.error('Error al guardar:', error);
@@ -44,9 +49,8 @@ export function guardarTrabajo() {
 }
 
 function limpiarCampos() {
-  document.getElementById('nombre').value = '';
-  document.getElementById('dni').value = '';
-  document.getElementById('cristal').value = '';
-  document.getElementById('detalle').value = '';
-  document.getElementById('fecha_entrega').value = '';
+  document.querySelectorAll('input').forEach(input => input.value = '');
 }
+
+// Activar validaciones en vivo al cargar el módulo
+activarValidacionesEnVivo();
