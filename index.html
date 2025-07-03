@@ -2,16 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Óptica Cristal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Óptica Cristal - Consulta de Trabajos</title>
   <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <!-- Formulario de consulta -->
-  <input id="numeroTrabajo" placeholder="N° de trabajo" />
-  <input id="dniCliente" placeholder="DNI del cliente" />
+  <h2>Consultar Trabajo</h2>
+
+  <label for="numeroTrabajo">Número de Trabajo:</label>
+  <input type="text" id="numeroTrabajo" placeholder="Ej: 100001" />
+
+  <label for="dniCliente">DNI del Cliente:</label>
+  <input type="text" id="dniCliente" placeholder="Ej: 12345678" />
+
   <button id="btnConsultar">Consultar</button>
 
-  <div id="spinner" style="display:none;">
+  <div id="spinner">
     <div class="loader"></div>
     <p>Buscando datos...</p>
   </div>
