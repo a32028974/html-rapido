@@ -1,153 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Ingreso rápido</title>
-  <style>
-    body {
-      font-family: Arial;
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
-    }
-    input {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    #mensaje {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .ok {
-      color: green;
-    }
-    .error {
-      color: red;
-    }
-  </style>
+  <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <h2>V3-7 16.10 Ingreso rápido</h2>
+  <h2>V3-7 16.19 Ingreso rápido</h2>
 
   <form id="formulario">
-    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
-    <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
-    <input type="text" name="dni" id="dni" placeholder="DNI" required>
-    <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
-    <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
-    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón">
+    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required />
+    <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
+    <input type="text" name="dni" id="dni" placeholder="DNI" required />
+    <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
+    <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
+    <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
 
     <!-- Campos ocultos -->
-    <input type="hidden" name="total">
-    <input type="hidden" name="sena">
-    <input type="hidden" name="saldo">
-    <input type="hidden" name="forma_pago">
-    <input type="hidden" name="otro_concepto">
-    <input type="hidden" name="descripcion">
-    <input type="hidden" name="tipo">
-    <input type="hidden" name="od_esf">
-    <input type="hidden" name="od_cil">
-    <input type="hidden" name="od_eje">
-    <input type="hidden" name="oi_esf">
-    <input type="hidden" name="oi_cil">
-    <input type="hidden" name="oi_eje">
-    <input type="hidden" name="add">
-    <input type="hidden" name="vendedor" value="Ingreso rápido">
+    <input type="hidden" name="total" />
+    <input type="hidden" name="sena" />
+    <input type="hidden" name="saldo" />
+    <input type="hidden" name="forma_pago" />
+    <input type="hidden" name="otro_concepto" />
+    <input type="hidden" name="descripcion" />
+    <input type="hidden" name="tipo" />
+    <input type="hidden" name="od_esf" />
+    <input type="hidden" name="od_cil" />
+    <input type="hidden" name="od_eje" />
+    <input type="hidden" name="oi_esf" />
+    <input type="hidden" name="oi_cil" />
+    <input type="hidden" name="oi_eje" />
+    <input type="hidden" name="add" />
+    <input type="hidden" name="vendedor" value="Ingreso rápido" />
 
-    <input type="submit" value="Guardar">
+    <input type="submit" value="Guardar" />
   </form>
 
   <p id="mensaje"></p>
 
-  <script>
-    const url = 'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec';
-
-    const hoy = new Date();
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const yy = String(hoy.getFullYear()).slice(-2);
-    const fechaHoy = `${dd}/${mm}/${yy}`;
-    document.getElementById('fecha').value = fechaHoy;
-
-    const form = document.getElementById('formulario');
-    const mensaje = document.getElementById('mensaje');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      mensaje.textContent = "";
-      mensaje.className = "";
-
-      const formData = new FormData(form);
-      const mayusForm = new FormData();
-
-      for (const [key, value] of formData.entries()) {
-        mayusForm.append(key, value.toUpperCase());
-      }
-
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          body: mayusForm
-        });
-
-        const text = await res.text();
-        mensaje.textContent = text;
-        mensaje.className = text.includes('✅') ? 'ok' : 'error';
-
-        if (text.includes('✅')) {
-          form.reset();
-          document.getElementById('fecha').value = fechaHoy;
-          generarProximoNumeroTrabajo();
-        }
-      } catch (err) {
-        mensaje.textContent = "❌ Error de red o conexión";
-        mensaje.className = "error";
-      }
-    });
-
-    document.getElementById('numero_armazon').addEventListener('blur', async () => {
-      const num = document.getElementById('numero_armazon').value.trim();
-      if (!num) return;
-      try {
-        const res = await fetch(`${url}?buscarArmazon=${num}`);
-        const text = await res.text();
-        if (text && !text.includes("ERROR")) {
-          document.getElementById('armazon_detalle').value = text;
-        }
-      } catch (err) {
-        console.error('Error buscando armazón', err);
-      }
-    });
-
-    document.getElementById('dni').addEventListener('blur', async () => {
-      const dni = document.getElementById('dni').value.trim();
-      if (!dni) return;
-      try {
-        const res = await fetch(`${url}?buscarDNI=${dni}`);
-        const nombre = await res.text();
-        if (nombre && !nombre.includes("ERROR")) {
-          document.getElementById('nombre').value = nombre;
-        }
-      } catch (err) {
-        console.error('Error buscando DNI', err);
-      }
-    });
-
-    async function generarProximoNumeroTrabajo() {
-      try {
-        const res = await fetch(`${url}?proximoTrabajo=1`);
-        const numero = await res.text();
-        document.getElementById('numero_trabajo').value = numero;
-      } catch (err) {
-        console.error("Error al obtener número de trabajo", err);
-      }
-    }
-
-    generarProximoNumeroTrabajo();
-  </script>
+  <script type="module" src="./js/ingresoRapido.js"></script>
 </body>
 </html>
