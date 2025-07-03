@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h2>Ingreso rápido v3-7 10.12 <span id="version"></span></h2>
+  <h2>Ingreso rápido v3-7 10.27 <span id="version"></span></h2>
 
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required>
@@ -61,20 +61,31 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      mensaje.textContent = "";
+      mensaje.className = "";
+
       const data = new FormData(form);
       const params = new URLSearchParams();
       data.forEach((value, key) => params.append(key, value.toUpperCase()));
-      const res = await fetch(`${url}?${params.toString()}`);
-      const text = await res.text();
-      mensaje.textContent = text;
-      mensaje.className = text.includes('✅') ? 'ok' : 'error';
-      if (text.includes('✅')) {
-        form.reset();
-        document.getElementById('fecha').value = fechaHoy;
-        generarProximoNumeroTrabajo();
+
+      try {
+        const res = await fetch(`${url}?${params.toString()}`);
+        const text = await res.text();
+        mensaje.textContent = text;
+        mensaje.className = text.includes('✅') ? 'ok' : 'error';
+
+        if (text.includes('✅')) {
+          form.reset();
+          document.getElementById('fecha').value = fechaHoy;
+          generarProximoNumeroTrabajo();
+        }
+      } catch (err) {
+        mensaje.textContent = "❌ Error de red o conexión";
+        mensaje.className = "error";
       }
     });
 
+    // Autocompletar armazón
     document.getElementById('numero_armazon').addEventListener('blur', async () => {
       const num = document.getElementById('numero_armazon').value.trim();
       if (!num) return;
@@ -83,6 +94,7 @@
       document.getElementById('armazon_detalle').value = text;
     });
 
+    // Autocompletar nombre por DNI
     document.getElementById('dni').addEventListener('blur', async () => {
       const dni = document.getElementById('dni').value.trim();
       if (!dni) return;
