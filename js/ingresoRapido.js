@@ -42,13 +42,9 @@ armazonInput.addEventListener('blur', async () => {
   mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarArmazon=${codigo}`);
-    const data = await res.json();
-    if (data.detalle && data.precio) {
-      document.getElementById('armazon_detalle').value = data.detalle;
-      const precioArmazonField = document.getElementById('precio_armazon');
-      precioArmazonField.removeAttribute('readonly');
-      precioArmazonField.value = `$${parseInt(data.precio)}`;
-      calcularTotal();
+    const text = await res.text();
+    if (!text.includes('ERROR')) {
+      document.getElementById('armazon_detalle').value = text;
     }
   } catch (err) {
     console.error('Error buscando armazón:', err);
@@ -68,7 +64,7 @@ cristalInput.addEventListener('blur', async () => {
     if (!precio.includes('ERROR')) {
       const precioCristalField = document.getElementById('precio_cristal');
       precioCristalField.removeAttribute('readonly');
-      precioCristalField.value = `$${parseInt(precio)}`;
+      precioCristalField.value = `$${parseInt(precio) || 0}`;
       calcularTotal();
     }
   } catch (err) {
@@ -94,6 +90,7 @@ function calcularTotal() {
 // Rellenar select de graduaciones
 function llenarSelect(id, min, max, step) {
   const select = document.getElementById(id);
+  if (!select) return;
   for (let v = min; v <= max; v += step) {
     const option = document.createElement('option');
     option.value = option.textContent = v.toFixed(2);
