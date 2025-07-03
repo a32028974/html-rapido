@@ -1,5 +1,4 @@
-const url =
-  'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec';
+const url = 'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec';
 
 const hoy = new Date();
 const dd = String(hoy.getDate()).padStart(2, '0');
@@ -15,6 +14,7 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
   mensaje.textContent = '';
   mensaje.className = '';
+  mostrarSpinner(true);
 
   const formData = new FormData(form);
   const mayusForm = new FormData();
@@ -32,6 +32,7 @@ form.addEventListener('submit', async (e) => {
     const text = await res.text();
     mensaje.textContent = text;
     mensaje.className = text.includes('✅') ? 'ok' : 'error';
+    mostrarSpinner(false);
 
     if (text.includes('✅')) {
       form.reset();
@@ -41,6 +42,7 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     mensaje.textContent = '❌ Error de red o conexión';
     mensaje.className = 'error';
+    mostrarSpinner(false);
   }
 });
 
@@ -48,8 +50,7 @@ document.getElementById('numero_armazon').addEventListener('blur', async () => {
   const num = document.getElementById('numero_armazon').value.trim();
   if (!num) return;
 
-  mostrarSpinner(true); // 👈 aparece el spinner
-
+  mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarArmazon=${num}`);
     const text = await res.text();
@@ -59,16 +60,14 @@ document.getElementById('numero_armazon').addEventListener('blur', async () => {
   } catch (err) {
     console.error('Error buscando armazón', err);
   }
-
-  mostrarSpinner(false); // 👈 se oculta el spinner
+  mostrarSpinner(false);
 });
-
 
 document.getElementById('dni').addEventListener('blur', async () => {
   const dni = document.getElementById('dni').value.trim();
   if (!dni) return;
-  mostrarSpinner(true); // 👈 Mostrar mientras busca
 
+  mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarDNI=${dni}`);
     const nombre = await res.text();
@@ -78,10 +77,8 @@ document.getElementById('dni').addEventListener('blur', async () => {
   } catch (err) {
     console.error('Error buscando DNI', err);
   }
-
-  mostrarSpinner(false); // 👈 Ocultar después de recibir respuesta
+  mostrarSpinner(false);
 });
-
 
 async function generarProximoNumeroTrabajo() {
   try {
@@ -97,6 +94,5 @@ function mostrarSpinner(mostrar) {
   const spinner = document.getElementById('spinner');
   spinner.style.display = mostrar ? 'block' : 'none';
 }
-
 
 generarProximoNumeroTrabajo();
