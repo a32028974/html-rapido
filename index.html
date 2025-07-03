@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <title>Ingreso rápido</title>
   <link rel="stylesheet" href="estilos.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">V 3-7 19.02 Ingreso rápido</h2>
+  <h2 class="titulo">V 3-7 19.24 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -28,7 +29,7 @@
 
     <div class="flex-group">
       <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="text" id="precio_armazon" readonly />
+      <input type="text" id="precio_armazon" />
     </div>
 
     <input type="text" name="otro_concepto" placeholder="Otro concepto" />
@@ -38,15 +39,15 @@
     <div class="receta">
       <h3>OD</h3>
       <div class="fila">
-        <input type="text" name="od_esf" placeholder="ESF" />
-        <input type="text" name="od_cil" placeholder="CIL" />
+        <select name="od_esf" id="od_esf"></select>
+        <select name="od_cil" id="od_cil"></select>
         <input type="text" name="od_eje" placeholder="EJE" />
       </div>
 
       <h3>OI</h3>
       <div class="fila">
-        <input type="text" name="oi_esf" placeholder="ESF" />
-        <input type="text" name="oi_cil" placeholder="CIL" />
+        <select name="oi_esf" id="oi_esf"></select>
+        <select name="oi_cil" id="oi_cil"></select>
         <input type="text" name="oi_eje" placeholder="EJE" />
       </div>
 
@@ -75,6 +76,11 @@
 
     <input type="submit" value="Guardar" />
   </form>
+
+  <div class="acciones">
+    <button type="button" id="btn-imprimir">🖨️ Imprimir</button>
+    <button type="button" id="btn-limpiar">🧹 Limpiar</button>
+  </div>
 
   <p id="mensaje"></p>
 
