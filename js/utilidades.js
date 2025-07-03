@@ -1,4 +1,7 @@
 export function mostrarSpinner(visible) {
-  const spinner = document.getElementById('spinner');
-  spinner.style.display = visible ? 'block' : 'none';
+  document.getElementById('spinner').style.display = visible ? 'block' : 'none';
+}
+
+export function imprimirFormulario() {
+  window.print();
 }
