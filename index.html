@@ -6,11 +6,11 @@
   <link rel="stylesheet" href="estilos.css" />
 </head>
 <body>
-  <h2>V3-7 17.31 Ingreso rápido</h2>
+  <h2 class="titulo">V 3-7 17.42 Ingreso rápido</h2>
 
-  <div id="spinner" style="display: none; text-align: center; margin-bottom: 15px;">
+  <div id="spinner" class="spinner">
     <div class="loader"></div>
-    <p>Cargando...</p>
+    <p class="spinner-text">Cargando...</p>
   </div>
 
   <form id="formulario">
@@ -21,33 +21,36 @@
 
     <div class="flex-group">
       <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="number" name="precio_cristal" id="precio_cristal" placeholder="$" min="0" />
+      <input type="text" name="precio_cristal" id="precio_cristal" placeholder="$" />
     </div>
 
     <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
 
     <div class="flex-group">
       <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="number" name="precio_armazon" id="precio_armazon" placeholder="$" min="0" />
+      <input type="text" name="precio_armazon" id="precio_armazon" placeholder="$" />
+    </div>
+
+    <div class="flex-group">
+      <input type="text" name="total" id="total" placeholder="Total" readonly />
+      <input type="text" name="sena" id="sena" placeholder="Seña" />
+      <input type="text" name="saldo" id="saldo" placeholder="Saldo" readonly />
     </div>
 
     <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor" required />
 
-    <!-- Campos ocultos -->
-    <input type="hidden" name="total" />
-    <input type="hidden" name="sena" />
-    <input type="hidden" name="saldo" />
-    <input type="hidden" name="forma_pago" />
-    <input type="hidden" name="otro_concepto" />
-    <input type="hidden" name="descripcion" />
-    <input type="hidden" name="tipo" />
-    <input type="hidden" name="od_esf" />
-    <input type="hidden" name="od_cil" />
-    <input type="hidden" name="od_eje" />
-    <input type="hidden" name="oi_esf" />
-    <input type="hidden" name="oi_cil" />
-    <input type="hidden" name="oi_eje" />
-    <input type="hidden" name="add" />
+    <!-- Campos adicionales visibles -->
+    <input type="text" name="forma_pago" placeholder="Forma de pago" />
+    <input type="text" name="otro_concepto" placeholder="Otro concepto" />
+    <input type="text" name="descripcion" placeholder="Descripción" />
+    <input type="text" name="tipo" placeholder="Tipo" />
+    <input type="text" name="od_esf" placeholder="OD ESF" />
+    <input type="text" name="od_cil" placeholder="OD CIL" />
+    <input type="text" name="od_eje" placeholder="OD EJE" />
+    <input type="text" name="oi_esf" placeholder="OI ESF" />
+    <input type="text" name="oi_cil" placeholder="OI CIL" />
+    <input type="text" name="oi_eje" placeholder="OI EJE" />
+    <input type="text" name="add" placeholder="ADD" />
 
     <input type="submit" value="Guardar" />
   </form>
