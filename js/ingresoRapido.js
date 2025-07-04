@@ -1,5 +1,5 @@
 
-const url = 'https://script.google.com/macros/s/AKfycbz-XIGghKn7_OXLtWtHdeJLqhnei166e0cLS5xf-7vuyPSy-NQnMlZZW8C8lzJYbzrU_A/exec';
+const url = 'https://script.google.com/macros/s/AKfycby_ZD4RPuO5FxYXdY4ZTjJiEOH7Zq7C2WjCaKJe7SxCYp3mPxG3f6Qzfamo3OxNpI2m/exec';
 
 const form = document.getElementById('formulario');
 const mensaje = document.getElementById('mensaje');
@@ -110,3 +110,18 @@ document.getElementById('btn-imprimir').onclick = () => window.print();
 document.getElementById('btn-limpiar').onclick = () => {
   form.reset(); fechaInput.value = `${dd}/${mm}/${yy}`;
 }
+
+async function generarProximoNumeroTrabajo() {
+  try {
+    const res = await fetch(`${url}?proximoTrabajo=1`);
+    const numero = await res.text();
+    document.getElementById('numero_trabajo').value = numero;
+  } catch (err) {
+    console.error('Error obteniendo número de trabajo:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('fecha').value = `${dd}/${mm}/${yy}`;
+  generarProximoNumeroTrabajo();
+});
