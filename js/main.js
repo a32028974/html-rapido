@@ -1,4 +1,3 @@
-// main.js
 import { obtenerNumeroTrabajo } from './numeroTrabajo.js';
 import { cargarFechaHoy } from './fechaHoy.js';
 import { buscarNombrePorDNI } from './buscarNombre.js';
@@ -10,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nombreInput = document.getElementById("nombre");
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
+  const precioArmazon = document.getElementById("precio_armazon");
   const totalInput = document.getElementById("total");
   const spinner = document.getElementById("spinner");
 
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   numeroArmazon.addEventListener("blur", () => {
     if (numeroArmazon.value.trim()) {
-      buscarArmazonPorNumero(numeroArmazon, armazonDetalle, spinner);
+      buscarArmazonPorNumero(numeroArmazon, armazonDetalle, precioArmazon, spinner);
     }
   });
 
