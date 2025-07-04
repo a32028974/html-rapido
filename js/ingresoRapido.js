@@ -1,5 +1,5 @@
 
-const url = 'https://script.google.com/macros/s/AKfycbwDfq5i6gl2rz71_G6eht3pLxA3fq2V307fYvFG1AWMrbg4wzodNRsrE_zfub9Ahp2bAw/exec';
+const url = 'https://script.google.com/macros/s/AKfycbz-XIGghKn7_OXLtWtHdeJLqhnei166e0cLS5xf-7vuyPSy-NQnMlZZW8C8lzJYbzrU_A/exec';
 
 const form = document.getElementById('formulario');
 const mensaje = document.getElementById('mensaje');
