@@ -1,5 +1,5 @@
 
-const API_URL = "https://script.google.com/macros/s/AKfycby_ZD4RPuO5FxYXdY4ZTjJiEOH7Zq7C2WjCaKJe7SxCYp3mPxG3f6Qzfamo3OxNpI2m/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzTBybPBGTC5cigKAz95roNDKgE4094UGB6IqhlzdQftPaWfpgMs6nIDtmrE7X5IrEsRg/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
   const dniInput = document.getElementById("dni");
