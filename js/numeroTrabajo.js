@@ -6,16 +6,10 @@ export async function obtenerNumeroTrabajo() {
 
   try {
     const res = await fetch(`${API_URL}?proximoTrabajo=1`);
-    const texto = await res.text();
-    const numero = parseInt(texto);
-
-    if (!isNaN(numero)) {
-      numeroTrabajoInput.value = numero;
-    } else {
-      numeroTrabajoInput.value = "100000"; // Valor base si algo falla
-    }
+    const numero = await res.text();
+    numeroTrabajoInput.value = numero;
   } catch (err) {
     console.error("Error obteniendo número de trabajo:", err);
-    numeroTrabajoInput.value = "100000"; // Valor base por error
+    numeroTrabajoInput.value = "100001"; // fallback
   }
 }
