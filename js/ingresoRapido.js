@@ -1,4 +1,4 @@
-const url = 'https://script.google.com/macros/s/AKfycbwnBoz6Hidxrp2hOVT_0vICk2P-lF4gv5DIEmXzgPpX60-o--SBlgdn6pb9pLpZds2EoQ/exec';
+const url = 'https://script.google.com/macros/s/AKfycbymhpEWaLYccnBNTJs-5J1z_YOvNwg35OAfwuM1Ebpt_6L6CdWvKHW5Sv85LkOojJzeuw/exec';
 
 const form = document.getElementById('formulario');
 const mensaje = document.getElementById('mensaje');
