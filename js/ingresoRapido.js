@@ -1,5 +1,14 @@
-
 const API_URL = "https://script.google.com/macros/s/AKfycbz08I3_yQjhtWvbgfJYHDR89dfF7m__e0jIhaJ_QURTdYSAuueaQ11UkIKphj1ACA-WiA/exec";
+
+async function obtenerNumeroTrabajo() {
+  try {
+    const res = await fetch(`${API_URL}?proximoTrabajo=1`);
+    const numero = await res.text();
+    document.getElementById("numero_trabajo").value = numero;
+  } catch (err) {
+    console.error("Error obteniendo número de trabajo:", err);
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const dniInput = document.getElementById("dni");
@@ -10,9 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const otroConceptoInput = document.getElementById("otro_concepto");
   const spinner = document.getElementById("spinner");
 
+  obtenerNumeroTrabajo(); // ← Ejecuta al cargar
+
   function mostrarSpinner() {
     spinner.style.display = "block";
   }
+
   function ocultarSpinner() {
     spinner.style.display = "none";
   }
