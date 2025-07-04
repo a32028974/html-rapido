@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo"> v4-7 17.23 Ingreso rápido</h2>
+  <h2 class="titulo">v4-7 17.42 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -88,13 +88,7 @@
 
   <p id="mensaje"></p>
 
-<script type="module" src="js/api.js"></script>
-<script type="module" src="js/numeroTrabajo.js"></script>
-<script type="module" src="js/fechaHoy.js"></script>
-<script type="module" src="js/buscarNombre.js"></script>
-<script type="module" src="js/buscarArmazon.js"></script>
-<script type="module" src="js/calculos.js"></script>
-<script type="module" src="js/main.js"></script>
-
+  <!-- Solo cargamos main.js, que importa los demás módulos -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
