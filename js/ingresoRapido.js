@@ -1,11 +1,9 @@
-const url = 'https://script.google.com/macros/s/AKfycbymhpEWaLYccnBNTJs-5J1z_YOvNwg35OAfwuM1Ebpt_6L6CdWvKHW5Sv85LkOojJzeuw/exec';
+
+const url = 'https://script.google.com/macros/s/AKfycbz-XIGghKn7_OXLtWtHdeJLqhnei166e0cLS5xf-7vuyPSy-NQnMlZZW8C8lzJYbzrU_A/exec';
 
 const form = document.getElementById('formulario');
 const mensaje = document.getElementById('mensaje');
 const spinner = document.getElementById('spinner');
-const printBtn = document.getElementById('btn-imprimir');
-const clearBtn = document.getElementById('btn-limpiar');
-
 const fechaInput = document.getElementById('fecha');
 const hoy = new Date();
 const dd = String(hoy.getDate()).padStart(2, '0');
@@ -17,9 +15,8 @@ function mostrarSpinner(mostrar) {
   spinner.style.display = mostrar ? 'block' : 'none';
 }
 
-const dniInput = document.getElementById('dni');
-dniInput.addEventListener('blur', async () => {
-  const dni = dniInput.value.trim();
+document.getElementById('dni').addEventListener('blur', async () => {
+  const dni = document.getElementById('dni').value.trim();
   if (!dni) return;
   mostrarSpinner(true);
   try {
@@ -29,145 +26,87 @@ dniInput.addEventListener('blur', async () => {
       document.getElementById('nombre').value = nombre;
     }
   } catch (err) {
-    console.error('Error buscando DNI:', err);
+    console.error(err);
   }
   mostrarSpinner(false);
 });
 
-const armazonInput = document.getElementById('numero_armazon');
-armazonInput.addEventListener('blur', async () => {
-  const codigo = armazonInput.value.trim();
+document.getElementById('numero_armazon').addEventListener('blur', async () => {
+  const codigo = document.getElementById('numero_armazon').value.trim();
   if (!codigo) return;
   mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarArmazon=${codigo}`);
     const data = await res.json();
-    if (data && data.modelo) {
-      document.getElementById('armazon_detalle').value = data.modelo;
-    }
-    const precioArmazonField = document.getElementById('precio_armazon');
-    precioArmazonField.removeAttribute('readonly');
-    precioArmazonField.value = data.precio ? `$${parseInt(data.precio) || 0}` : '';
+    document.getElementById('armazon_detalle').value = data.modelo;
+    document.getElementById('precio_armazon').value = `$${parseInt(data.precio) || 0}`;
     calcularTotal();
   } catch (err) {
-    console.error('Error buscando armazón:', err);
+    console.error(err);
   }
   mostrarSpinner(false);
 });
 
-const cristalInput = document.getElementById('cristal');
-cristalInput.addEventListener('blur', async () => {
-  const tipo = cristalInput.value.trim();
+document.getElementById('cristal').addEventListener('blur', async () => {
+  const tipo = document.getElementById('cristal').value.trim();
   if (!tipo) return;
   mostrarSpinner(true);
   try {
     const res = await fetch(`${url}?buscarCristal=${tipo}`);
     const precio = await res.text();
-    const precioCristalField = document.getElementById('precio_cristal');
-    precioCristalField.removeAttribute('readonly');
-    precioCristalField.value = `$${parseInt(precio) || 0}`;
+    document.getElementById('precio_cristal').value = `$${parseInt(precio) || 0}`;
     calcularTotal();
   } catch (err) {
-    console.error('Error buscando precio cristal:', err);
+    console.error(err);
   }
   mostrarSpinner(false);
 });
 
-const senaInput = document.getElementById('sena');
-senaInput.addEventListener('input', calcularTotal);
+document.getElementById('sena').addEventListener('input', calcularTotal);
+document.getElementById('precio_otro').addEventListener('input', calcularTotal);
+
+function llenarSelectConSigno(id, min, max, step) {
+  const select = document.getElementById(id);
+  for (let v = min; v <= max; v += step) {
+    const label = v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2);
+    const option = document.createElement('option');
+    option.value = v.toFixed(2);
+    option.textContent = label;
+    select.appendChild(option);
+  }
+  select.value = '0.00';
+}
+['od_esf','oi_esf'].forEach(id => llenarSelectConSigno(id, -24, 24, 0.25));
+['od_cil','oi_cil'].forEach(id => llenarSelectConSigno(id, -7, 7, 0.25));
 
 function calcularTotal() {
-  const precioCristal = parseInt((document.getElementById('precio_cristal').value || '').replace(/\D/g, '')) || 0;
-  const precioArmazon = parseInt((document.getElementById('precio_armazon').value || '').replace(/\D/g, '')) || 0;
-  const sena = parseInt(senaInput.value.replace(/\D/g, '')) || 0;
-  const total = precioCristal + precioArmazon;
-  const saldo = total - sena;
+  const a = n => parseInt((document.getElementById(n)?.value || '').replace(/\D/g, '')) || 0;
+  const otroRaw = document.getElementById('precio_otro')?.value.trim() || '0';
+  const otro = parseInt(otroRaw.replace(/\D/g, '')) || 0;
+  const signo = otroRaw.startsWith('-') ? -1 : 1;
+  const total = a('precio_cristal') + a('precio_armazon') + signo * otro;
+  const saldo = total - a('sena');
   document.getElementById('total').value = `$${total}`;
   document.getElementById('saldo').value = `$${saldo}`;
 }
 
-function llenarSelect(id, min, max, step) {
-  const select = document.getElementById(id);
-  if (!select) return;
-  for (let v = min; v <= max; v += step) {
-    const option = document.createElement('option');
-    option.value = option.textContent = v.toFixed(2);
-    select.appendChild(option);
-  }
-}
-
-llenarSelect('od_esf', -24.00, 24.00, 0.25);
-llenarSelect('oi_esf', -24.00, 24.00, 0.25);
-llenarSelect('od_cil', -7.00, 7.00, 0.25);
-llenarSelect('oi_cil', -7.00, 7.00, 0.25);
-
-async function generarProximoNumeroTrabajo() {
-  try {
-    const res = await fetch(`${url}?proximoTrabajo=1`);
-    const numero = await res.text();
-    document.getElementById('numero_trabajo').value = numero;
-  } catch (err) {
-    console.error('Error obteniendo número de trabajo:', err);
-  }
-}
-
-form.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') {
-    const tag = e.target.tagName.toLowerCase();
-    if (tag !== 'textarea') {
-      e.preventDefault();
-    }
-  }
-});
-
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  mensaje.textContent = '';
-  mensaje.className = '';
-
-  const formData = new FormData(form);
+  const data = new FormData(form);
   const mayusForm = new FormData();
-  for (const [key, value] of formData.entries()) {
-    mayusForm.append(key, value.toUpperCase());
-  }
-
+  for (const [k, v] of data.entries()) mayusForm.append(k, v.toUpperCase());
   mostrarSpinner(true);
   try {
     const res = await fetch(url, { method: 'POST', body: mayusForm });
     const text = await res.text();
-    if (text.includes('✅')) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Trabajo guardado',
-        text: text,
-        confirmButtonText: 'OK'
-      });
-      generarProximoNumeroTrabajo();
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: text
-      });
-    }
+    Swal.fire(text.includes('✅') ? { icon: 'success', title: 'Guardado', text } : { icon: 'error', title: 'Error', text });
   } catch (err) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error de red o conexión',
-      text: err.message
-    });
+    Swal.fire({ icon: 'error', title: 'Error de red', text: err.message });
   }
   mostrarSpinner(false);
 });
 
-printBtn.addEventListener('click', () => {
-  window.print();
-});
-
-clearBtn.addEventListener('click', () => {
-  form.reset();
-  fechaInput.value = `${dd}/${mm}/${yy}`;
-  generarProximoNumeroTrabajo();
-});
-
-generarProximoNumeroTrabajo();
+document.getElementById('btn-imprimir').onclick = () => window.print();
+document.getElementById('btn-limpiar').onclick = () => {
+  form.reset(); fechaInput.value = `${dd}/${mm}/${yy}`;
+}
