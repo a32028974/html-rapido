@@ -1,15 +1,21 @@
 // numeroTrabajo.js
 import { API_URL } from './api.js';
 
-export function obtenerNumeroTrabajo() {
+export async function obtenerNumeroTrabajo() {
   const numeroTrabajoInput = document.getElementById("numero_trabajo");
 
-  fetch(`${API_URL}?proximoTrabajo=1`)
-    .then(res => res.text())
-    .then(numero => {
+  try {
+    const res = await fetch(`${API_URL}?proximoTrabajo=1`);
+    const texto = await res.text();
+    const numero = parseInt(texto);
+
+    if (!isNaN(numero)) {
       numeroTrabajoInput.value = numero;
-    })
-    .catch(err => {
-      console.error("Error obteniendo número de trabajo:", err);
-    });
+    } else {
+      numeroTrabajoInput.value = "100000"; // Valor base si algo falla
+    }
+  } catch (err) {
+    console.error("Error obteniendo número de trabajo:", err);
+    numeroTrabajoInput.value = "100000"; // Valor base por error
+  }
 }
