@@ -1,8 +1,9 @@
+// main.js
 import { obtenerNumeroTrabajo } from './numeroTrabajo.js';
 import { cargarFechaHoy } from './fechaHoy.js';
 import { buscarNombrePorDNI } from './buscarNombre.js';
 import { buscarArmazonPorNumero } from './buscarArmazon.js';
-import { configurarCalculoOtroConcepto } from './calculos.js';
+import { configurarCalculoPrecios } from './calculos.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const dniInput = document.getElementById("dni");
@@ -10,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
   const totalInput = document.getElementById("total");
-  const otroConceptoInput = document.getElementById("otro_concepto");
   const spinner = document.getElementById("spinner");
 
   obtenerNumeroTrabajo();
@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   numeroArmazon.addEventListener("blur", () => {
     if (numeroArmazon.value.trim()) {
-      buscarArmazonPorNumero(numeroArmazon, armazonDetalle, totalInput, spinner);
+      buscarArmazonPorNumero(numeroArmazon, armazonDetalle, spinner);
     }
   });
 
-  configurarCalculoOtroConcepto(otroConceptoInput, totalInput);
+  configurarCalculoPrecios();
 });
