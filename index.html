@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ingreso rápido</title>
+  <link rel="stylesheet" href="estilos.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <h2 class="titulo">Ingreso rápido</h2>
+
+  <div class="spinner" id="spinner">
+    <div class="loader"></div>
+    <div class="spinner-text">Cargando...</div>
+  </div>
+
+  <form id="formulario">
+    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required />
+    <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
+    <input type="text" name="dni" id="dni" placeholder="DNI" required />
+    <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
+
+    <div class="flex-group">
+      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
+      <input type="text" id="precio_cristal" readonly />
+    </div>
+
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
+
+    <div class="flex-group">
+      <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
+      <input type="text" id="precio_armazon" />
+    </div>
+
+    <div class="flex-group">
+      <input type="text" name="otro_concepto" id="otro_concepto" placeholder="Otro concepto" />
+      <input type="text" id="precio_otro" placeholder="Precio" />
+    </div>
+
+    <input type="text" name="descripcion" placeholder="Descripción" />
+    <input type="text" name="tipo" placeholder="Tipo" />
+
+    <div class="receta">
+      <h3>OD</h3>
+      <div class="fila">
+        <select name="od_esf" id="od_esf"></select>
+        <select name="od_cil" id="od_cil"></select>
+        <input type="text" name="od_eje" placeholder="EJE" />
+      </div>
+
+      <h3>OI</h3>
+      <div class="fila">
+        <select name="oi_esf" id="oi_esf"></select>
+        <select name="oi_cil" id="oi_cil"></select>
+        <input type="text" name="oi_eje" placeholder="EJE" />
+      </div>
+
+      <div class="fila">
+        <input type="text" name="add" placeholder="ADD" />
+      </div>
+    </div>
+
+    <div class="total-boxes">
+      <div>
+        <label for="total">TOTAL</label>
+        <input type="text" id="total" name="total" readonly />
+      </div>
+      <div>
+        <label for="sena">SEÑA</label>
+        <input type="text" id="sena" name="sena" />
+      </div>
+      <div>
+        <label for="saldo">SALDO</label>
+        <input type="text" id="saldo" name="saldo" readonly />
+      </div>
+    </div>
+
+    <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor" />
+    <input type="text" name="forma_pago" placeholder="Forma de pago" />
+
+    <input type="submit" value="Guardar" />
+  </form>
+
+  <div class="acciones">
+    <button type="button" id="btn-imprimir">🖨️ Imprimir</button>
+    <button type="button" id="btn-limpiar">🧹 Limpiar</button>
+  </div>
+
+  <p id="mensaje"></p>
+
+  <script type="module" src="./ingresoRapido.js"></script>
+</body>
+</html>
