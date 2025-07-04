@@ -1,37 +1,24 @@
 
 body {
-  font-family: Arial;
-  max-width: 900px;
-  margin: auto;
-  padding: 15px;
-  font-size: 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
-form { flex: 1 1 400px; }
-input, select {
-  width: 100%;
-  margin-bottom: 8px;
-  padding: 6px;
-  font-size: 14px;
-  box-sizing: border-box;
+.titulo {
+  text-align: center;
+  margin-bottom: 20px;
 }
-.flex-group {
-  display: flex;
-  gap: 5px;
-}
-.flex-group input:last-child,
-.flex-group select:last-child {
-  max-width: 80px;
-  text-align: right;
+.spinner {
+  display: none;
+  text-align: center;
 }
 .loader {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3498db;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
@@ -39,69 +26,29 @@ input, select {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-.spinner {
-  display: none;
-  text-align: center;
-  margin-bottom: 10px;
-}
-.spinner-text {
-  margin: 5px 0;
-  font-size: 13px;
-}
-#mensaje { font-weight: bold; margin-top: 10px; }
-.ok { color: green; }
-.error { color: red; }
-.titulo { font-size: 16px; width: 100%; }
-.receta {
-  flex: 1 1 300px;
+.receta, .flex-group, .total-boxes, .acciones {
   margin-top: 15px;
 }
-.receta h3 { margin: 5px 0 0; }
-.receta .fila {
+.flex-group {
   display: flex;
-  gap: 5px;
-  margin-bottom: 6px;
+  gap: 10px;
 }
-.receta .fila input, .receta .fila select {
-  flex: 1;
-  text-align: center;
+.fila {
+  display: flex;
+  gap: 10px;
 }
 .total-boxes {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  justify-content: space-between;
 }
-.total-boxes > div {
-  flex: 1;
-  text-align: center;
-}
-.total-boxes label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 3px;
-}
-.total-boxes input {
-  text-align: center;
-}
-.acciones {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-}
-.acciones button {
-  padding: 6px 12px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
 @media print {
   body {
     width: 180mm;
     height: 130mm;
-    margin: 0 auto;
     overflow: hidden;
   }
-  .acciones, #mensaje {
+  .acciones, #mensaje, .spinner {
     display: none !important;
   }
 }
