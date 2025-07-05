@@ -52,3 +52,11 @@ body {
     display: none !important;
   }
 }
+#precio_armazon {
+  flex: 1;
+  min-width: 100px;
+}
+.flex-group input {
+  flex: 1;
+  min-width: 100px;
+}
