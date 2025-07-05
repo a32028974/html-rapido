@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
   const precioArmazon = document.getElementById("precio_armazon");
-  const celularInput = document.getElementById("telefono"); // <- corregido
+  const celularInput = document.getElementById("celular");
   const spinner = document.getElementById("spinner");
 
   cargarFechaHoy();
@@ -34,4 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   configurarCalculoPrecios();
+
+  // Módulo para calcular la fecha de retiro
+  const fechaInput = document.getElementById("fecha");
+  const radiosDias = document.querySelectorAll("input[name='dias_entrega']");
+
+  radiosDias.forEach(radio => {
+    radio.addEventListener("change", () => {
+      const dias = parseInt(radio.value);
+      if (!isNaN(dias)) {
+        const hoy = new Date();
+        hoy.setDate(hoy.getDate() + dias);
+        const dia = String(hoy.getDate()).padStart(2, '0');
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+        const anio = String(hoy.getFullYear()).slice(2);
+        fechaInput.value = `${dia}/${mes}/${anio}`;
+      }
+    });
+  });
 });
