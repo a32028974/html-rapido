@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ingreso rápido</title>
   <link rel="stylesheet" href="estilos.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">v 5-7 11.45 Ingreso rápido</h2>
+  <h2 class="titulo">v5-7 12.51 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -15,35 +16,41 @@
   </div>
 
   <form id="formulario">
-    <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required />
-    
-    <!-- Radio buttons para días estimados -->
-    <div class="dias-entrega">
-      <label>Días estimados de entrega:</label>
-      <div class="radio-group">
-        <label><input type="radio" name="dias_entrega" value="1" /> 1 día</label>
-        <label><input type="radio" name="dias_entrega" value="3" /> 3 días</label>
-        <label><input type="radio" name="dias_entrega" value="5" /> 5 días</label>
-        <label><input type="radio" name="dias_entrega" value="7" /> 7 días</label>
+    <div class="fecha-entrega-group">
+      <div>
+        <label for="fecha">Fecha que encarga:</label>
+        <input type="text" id="fecha" required />
+      </div>
+      <div>
+        <label for="fecha_retira">Fecha que retira (estimada):</label>
+        <input type="text" name="fecha_retira" id="fecha_retira" readonly />
       </div>
     </div>
 
-    <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
-    
-    <input type="text" name="dni" id="dni" placeholder="DNI" required />
-    <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
-    <input type="text" name="telefono" id="celular" placeholder="Número de teléfono" required />
+    <div class="radio-group">
+      <p>Días estimados de entrega:</p>
+      <label><input type="radio" name="dias_entrega" value="3" /> Stock <span class="nota">(7 días aprox)</span></label>
+      <label><input type="radio" name="dias_entrega" value="1" /> Urgente <span class="nota">(3 días aprox)</span></label>
+      <label><input type="radio" name="dias_entrega" value="15" /> Laboratorio <span class="nota">(15 días aprox)</span></label>
+    </div>
+
+    <div class="flex-group">
+      <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
+      <input type="text" name="dni" id="dni" placeholder="DNI" required />
+      <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
+      <input type="text" name="telefono" id="telefono" placeholder="Número de celular" required />
+    </div>
 
     <div class="flex-group">
       <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="text" id="precio_cristal" />
+      <input type="text" id="precio_cristal" placeholder="Precio" />
     </div>
 
     <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
 
     <div class="flex-group">
       <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="text" id="precio_armazon" />
+      <input type="text" id="precio_armazon" placeholder="Precio" />
     </div>
 
     <div class="flex-group">
@@ -96,8 +103,8 @@
   </form>
 
   <div class="acciones">
-    <button type="button" id="btn-imprimir">🖨️ Imprimir</button>
-    <button type="button" id="btn-limpiar">🧹 Limpiar</button>
+    <button type="button" id="btn-imprimir">📸 Imprimir</button>
+    <button type="button" id="btn-limpiar">🪑 Limpiar</button>
   </div>
 
   <p id="mensaje"></p>
