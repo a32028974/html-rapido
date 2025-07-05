@@ -1,4 +1,3 @@
-// main.js
 import { obtenerNumeroTrabajo } from './numeroTrabajo.js';
 import { cargarFechaHoy } from './fechaHoy.js';
 import { buscarNombrePorDNI } from './buscarNombre.js';
@@ -11,10 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
   const precioArmazon = document.getElementById("precio_armazon");
+  const celularInput = document.getElementById("celular");
   const spinner = document.getElementById("spinner");
 
-  obtenerNumeroTrabajo();
   cargarFechaHoy();
+
+  // Solo se genera el número de trabajo si el celular está bien completado
+  celularInput.addEventListener("blur", () => {
+    if (celularInput.value.trim().length >= 4) {
+      obtenerNumeroTrabajo();
+    }
+  });
 
   dniInput.addEventListener("blur", () => {
     if (dniInput.value.trim()) {
