@@ -1,32 +1,22 @@
 // numeroTrabajo.js
-export function generarNumeroTrabajo() {
+export function obtenerNumeroTrabajo() {
+  const telefonoInput = document.getElementById("fecha");
   const numeroTrabajoInput = document.getElementById("numero_trabajo");
-  const telefonoInput = document.getElementById("telefono");
 
-  function crearNumeroUnico(telefono) {
-    const now = new Date();
-    const dia = String(now.getDate()).padStart(2, "0");
-    const mes = String(now.getMonth() + 1).padStart(2, "0"); // enero = 0
-    const hora = String(now.getHours()).padStart(2, "0");
-    const anio = "5"; // solo el "5" de 2025
-
-    const ultimos4 = telefono.slice(-4);
-
-    return `${anio}${mes}${dia}${hora}${ultimos4}`;
+  const telefono = telefonoInput.value.trim();
+  if (!telefono || telefono.length < 4) {
+    alert("Por favor, ingresá el número de celular antes.");
+    return;
   }
 
-  telefonoInput.addEventListener("blur", () => {
-    const telefono = telefonoInput.value.trim();
-    if (telefono.length >= 4) {
-      const numeroTrabajo = crearNumeroUnico(telefono);
-      numeroTrabajoInput.value = numeroTrabajo;
-    } else {
-      numeroTrabajoInput.value = "";
-      Swal.fire({
-        icon: "error",
-        title: "Teléfono inválido",
-        text: "Ingresá al menos los últimos 4 dígitos del teléfono.",
-      });
-    }
-  });
+  const fecha = new Date();
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  const hora = fecha.getHours().toString().padStart(2, '0');
+  const anio = fecha.getFullYear().toString().slice(-1);
+
+  const ultimos4 = telefono.slice(-4);
+  const numeroTrabajo = `${ultimos4}${dia}${mes}${hora}${anio}`;
+
+  numeroTrabajoInput.value = numeroTrabajo;
 }
