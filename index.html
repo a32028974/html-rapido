@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ingreso rápido</title>
   <link rel="stylesheet" href="estilos.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">v 5-7 10.55 Ingreso rápido</h2>
+  <h2 class="titulo">v5-7 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -16,25 +17,21 @@
 
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required />
-
     <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
-    
     <input type="text" name="dni" id="dni" placeholder="DNI" required />
     <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
-
-    <!-- Teléfono nuevo -->
-    <input type="text" name="telefono" id="telefono" placeholder="Número de teléfono" required />
+    <input type="text" name="celular" id="celular" placeholder="Número de celular" required />
 
     <div class="flex-group">
       <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="text" id="precio_cristal" />
+      <input type="text" id="precio_cristal" placeholder="Precio" />
     </div>
 
     <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
 
     <div class="flex-group">
       <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="text" id="precio_armazon" />
+      <input type="text" id="precio_armazon" placeholder="Precio" />
     </div>
 
     <div class="flex-group">
@@ -93,7 +90,6 @@
 
   <p id="mensaje"></p>
 
-  <!-- Solo cargamos main.js que importa los demás módulos -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
