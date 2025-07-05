@@ -10,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
   const precioArmazon = document.getElementById("precio_armazon");
-  const celularInput = document.getElementById("celular");
+  const celularInput = document.getElementById("telefono"); // <- corregido
   const spinner = document.getElementById("spinner");
 
   cargarFechaHoy();
 
-  // Solo se genera el número de trabajo si el celular está bien completado
   celularInput.addEventListener("blur", () => {
     if (celularInput.value.trim().length >= 4) {
       obtenerNumeroTrabajo();
