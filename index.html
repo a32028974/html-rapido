@@ -1,14 +1,14 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ingreso rápido</title>
-  <link rel="stylesheet" href="estilos.css" />
+  <meta charset="UTF-8">
+  <title>v5-7 13.45 Ingreso rápido</title>
+  <link rel="stylesheet" href="estilos.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">v5-7 13.20 Ingreso rápido</h2>
+  <h2 class="titulo">v5-7 13.32 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -16,95 +16,98 @@
   </div>
 
   <form id="formulario">
-    <div class="fecha-entrega-group">
-      <div>
+    <div class="flex-group">
+      <div class="grupo">
         <label for="fecha">Fecha que encarga:</label>
-        <input type="text" id="fecha" required />
+        <input type="text" name="fecha" id="fecha" readonly>
       </div>
-      <div>
+      <div class="grupo">
         <label for="fecha_retira">Fecha que retira (estimada):</label>
-        <input type="text" name="fecha_retira" id="fecha_retira" readonly />
+        <input type="text" name="fecha_retira" id="fecha_retira" readonly>
       </div>
     </div>
 
-    <div class="radio-group">
-      <p>Días estimados de entrega:</p>
-      <label><input type="radio" name="dias_entrega" value="3" /> Stock <span class="nota">(7 días aprox)</span></label>
-      <label><input type="radio" name="dias_entrega" value="1" /> Urgente <span class="nota">(3 días aprox)</span></label>
-      <label><input type="radio" name="dias_entrega" value="15" /> Laboratorio <span class="nota">(15 días aprox)</span></label>
+    <p>Días estimados de entrega:</p>
+    <div class="flex-group">
+      <label><input type="radio" name="entrega" value="7" checked> Stock <span class="sub">(7 días aprox)</span></label>
+      <label><input type="radio" name="entrega" value="3"> Urgente <span class="sub">(3 días aprox)</span></label>
+      <label><input type="radio" name="entrega" value="15"> Laboratorio <span class="sub">(15 días aprox)</span></label>
     </div>
 
     <div class="flex-group">
-      <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
-      <input type="text" name="dni" id="dni" placeholder="DNI" required />
-      <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
-      <input type="text" name="telefono" id="telefono" placeholder="Número de celular" required />
+      <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
+      <input type="text" name="dni" id="dni" placeholder="DNI" required>
+      <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
+      <input type="text" name="telefono" id="telefono" placeholder="Número de teléfono" required>
     </div>
 
     <div class="flex-group">
-      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="text" id="precio_cristal" placeholder="Precio" />
+      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
+      <input type="text" id="precio_cristal" placeholder="Precio">
     </div>
 
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
+    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
 
     <div class="flex-group">
-      <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón" />
-      <input type="text" id="precio_armazon" placeholder="Precio" />
+      <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón">
+      <input type="text" id="precio_armazon" placeholder="Precio">
     </div>
 
     <div class="flex-group">
-      <input type="text" name="otro_concepto" id="otro_concepto" placeholder="Otro concepto" />
-      <input type="text" id="precio_otro" placeholder="Precio" />
+      <input type="text" name="otro_concepto" id="otro_concepto" placeholder="Otro concepto">
+      <input type="text" id="precio_otro" placeholder="Precio">
     </div>
 
-    <input type="text" name="descripcion" placeholder="Descripción" />
-    <input type="text" name="tipo" placeholder="Tipo" />
+    <div class="flex-group">
+      <input type="text" name="descripcion" placeholder="Descripción">
+      <input type="text" name="tipo" placeholder="Tipo">
+    </div>
 
     <div class="receta">
       <h3>OD</h3>
       <div class="fila">
         <select name="od_esf" id="od_esf"></select>
         <select name="od_cil" id="od_cil"></select>
-        <input type="text" name="od_eje" placeholder="EJE" />
+        <input type="text" name="od_eje" placeholder="EJE">
       </div>
 
       <h3>OI</h3>
       <div class="fila">
         <select name="oi_esf" id="oi_esf"></select>
         <select name="oi_cil" id="oi_cil"></select>
-        <input type="text" name="oi_eje" placeholder="EJE" />
+        <input type="text" name="oi_eje" placeholder="EJE">
       </div>
 
       <div class="fila">
-        <input type="text" name="add" placeholder="ADD" />
+        <input type="text" name="add" placeholder="ADD">
       </div>
     </div>
 
     <div class="total-boxes">
       <div>
         <label for="total">TOTAL</label>
-        <input type="text" id="total" name="total" readonly />
+        <input type="text" id="total" name="total" readonly>
       </div>
       <div>
         <label for="sena">SEÑA</label>
-        <input type="text" id="sena" name="sena" />
+        <input type="text" id="sena" name="sena">
       </div>
       <div>
         <label for="saldo">SALDO</label>
-        <input type="text" id="saldo" name="saldo" readonly />
+        <input type="text" id="saldo" name="saldo" readonly>
       </div>
     </div>
 
-    <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor" />
-    <input type="text" name="forma_pago" placeholder="Forma de pago" />
-
-    <input type="submit" value="Guardar" />
+    <div class="flex-group">
+      <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor">
+      <input type="text" name="forma_pago" placeholder="Forma de pago">
+      <input type="submit" value="Guardar">
+    </div>
   </form>
 
   <div class="acciones">
-    <button type="button" id="btn-imprimir">📸 Imprimir</button>
-    <button type="button" id="btn-limpiar">🪑 Limpiar</button>
+    <button type="button" id="btn-imprimir">🖰 Imprimir</button>
+    <button type="button" id="btn-limpiar">🪛 Limpiar</button>
   </div>
 
   <p id="mensaje"></p>
