@@ -1,25 +1,30 @@
+// buscarArmazon.js
 import { API_URL } from './api.js';
 
-export async function buscarArmazonPorNumero(numeroArmazon, armazonDetalle, spinner) {
-  const precioArmazon = document.getElementById("precio_armazon");
-
+export async function buscarArmazonPorNumero(numeroArmazon, armazonDetalle, precioArmazon, spinner) {
   try {
-    spinner.style.display = "block";
+    if (spinner) spinner.style.display = "block";
+
     const res = await fetch(`${API_URL}?buscarArmazon=${numeroArmazon.value.trim()}`);
     const data = await res.json();
 
     if (data.modelo) {
       armazonDetalle.value = data.modelo;
-      precioArmazon.value = data.precio;
+
+      // Solo sobrescribe el precio si hay uno en la respuesta
+      if (data.precio) {
+        precioArmazon.value = data.precio;
+      }
     } else {
       armazonDetalle.value = "No encontrado";
-      precioArmazon.value = "";
+      // No borra el precio si ya había uno cargado
     }
+
   } catch (err) {
     console.error("Error buscando armazón:", err);
     armazonDetalle.value = "Error";
-    precioArmazon.value = "";
+    // No borra el precio si ya había uno cargado
   } finally {
-    spinner.style.display = "none";
+    if (spinner) spinner.style.display = "none";
   }
 }
