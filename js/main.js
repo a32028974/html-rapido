@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const numeroArmazon = document.getElementById("numero_armazon");
   const armazonDetalle = document.getElementById("armazon_detalle");
   const precioArmazon = document.getElementById("precio_armazon");
-  const celularInput = document.getElementById("celular");
+  const celularInput = document.getElementById("telefono");
   const spinner = document.getElementById("spinner");
 
   cargarFechaHoy();
