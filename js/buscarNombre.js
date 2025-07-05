@@ -1,14 +1,22 @@
+// buscarNombre.js
 import { API_URL } from './api.js';
 
 export async function buscarNombrePorDNI(dniInput, nombreInput, spinner) {
   try {
-    spinner.style.display = "block";
-    const res = await fetch(`${API_URL}?buscarDNI=${dniInput.value.trim()}`);
-    const text = await res.text();
-    nombreInput.value = text.startsWith("ERROR") ? "" : text;
+    if (spinner) spinner.style.display = "block";
+    const dni = dniInput.value.trim();
+    const res = await fetch(`${API_URL}?buscarDNI=${dni}`);
+    const nombre = await res.text();
+
+    if (nombre.startsWith("ERROR")) {
+      nombreInput.value = "";
+    } else {
+      nombreInput.value = nombre;
+    }
   } catch (err) {
-    console.error("Error buscando DNI:", err);
+    console.error("Error buscando nombre por DNI:", err);
+    nombreInput.value = "";
   } finally {
-    spinner.style.display = "none";
+    if (spinner) spinner.style.display = "none";
   }
 }
