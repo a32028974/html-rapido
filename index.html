@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">v4-7 18.47 Ingreso rápido</h2>
+  <h2 class="titulo">v 5-7 10.55 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -16,13 +16,18 @@
 
   <form id="formulario">
     <input type="text" name="fecha_retira" id="fecha" placeholder="Fecha (dd/mm/aa)" required />
+
     <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required />
+    
     <input type="text" name="dni" id="dni" placeholder="DNI" required />
     <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required />
 
+    <!-- Teléfono nuevo -->
+    <input type="text" name="telefono" id="telefono" placeholder="Número de teléfono" required />
+
     <div class="flex-group">
       <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required />
-      <input type="text" id="precio_cristal" readonly />
+      <input type="text" id="precio_cristal" />
     </div>
 
     <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)" />
@@ -88,7 +93,7 @@
 
   <p id="mensaje"></p>
 
-  <!-- Solo cargamos main.js, que importa los demás módulos -->
+  <!-- Solo cargamos main.js que importa los demás módulos -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
