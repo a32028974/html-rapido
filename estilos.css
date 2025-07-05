@@ -1,6 +1,7 @@
+/* estilos.css */
 body {
   font-family: Arial, sans-serif;
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -30,30 +31,28 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-.receta,
 .flex-group,
+.receta .fila,
 .total-boxes,
 .acciones,
-.dias-entrega {
+.fecha-group {
+  display: flex;
+  gap: 10px;
   margin-top: 15px;
 }
 
-.flex-group,
-.fila,
-.radio-group {
-  display: flex;
-  gap: 10px;
-}
-
 .total-boxes {
-  display: flex;
-  gap: 10px;
   justify-content: space-between;
 }
 
-.radio-group label {
-  font-size: 14px;
-  cursor: pointer;
+.fecha-group {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.radios-entrega label {
+  margin-right: 15px;
+  font-size: 0.9em;
 }
 
 @media print {
@@ -62,7 +61,10 @@ body {
     height: 130mm;
     overflow: hidden;
   }
-  .acciones, #mensaje, .spinner {
+  .acciones,
+  #mensaje,
+  .spinner,
+  .radios-entrega {
     display: none !important;
   }
 }
