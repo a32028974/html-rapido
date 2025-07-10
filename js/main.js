@@ -6,7 +6,6 @@ import { configurarCalculoPrecios } from './calculos.js';
 import { guardarTrabajo } from './guardar.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  const fechaInput = document.getElementById("fecha");
   const fechaRetiraInput = document.getElementById("fecha_retira");
   const telefonoInput = document.getElementById("telefono");
   const numeroTrabajoInput = document.getElementById("numero_trabajo");
@@ -18,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const spinner = document.getElementById("spinner");
   const radiosEntrega = document.querySelectorAll("input[name='entrega']");
 
-  // Cargar fecha de hoy al encargar
-  cargarFechaHoy(fechaInput);
+  // ✅ Cargar fecha de hoy sin parámetros
+  cargarFechaHoy();
 
   // Calcular fecha estimada al cambiar opción de entrega
   radiosEntrega.forEach(radio => {
