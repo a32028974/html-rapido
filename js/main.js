@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const telefonoInput        = document.getElementById("telefono");
   const numeroTrabajoInput   = document.getElementById("numero_trabajo");
   const dniInput             = document.getElementById("dni");
+  const dniLoading           = document.getElementById("dni-loading");
   const nombreInput          = document.getElementById("nombre");
   const numeroArmazonInput   = document.getElementById("numero_armazon");
   const armazonDetalleInput  = document.getElementById("armazon_detalle");
@@ -17,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const spinner              = document.getElementById("spinner");
   const radiosEntrega        = document.querySelectorAll("input[name='entrega']");
 
-  // 1) Fecha de hoy (dd/mm/aa) en "Fecha que encarga"
-  cargarFechaHoy(); // usa #fecha de tu HTML:contentReference[oaicite:4]{index=4}
+  // 1) Fecha de hoy (dd/mm/aa)
+  cargarFechaHoy();
 
   // Helpers de fecha
   function parseFechaDDMMYY(str) {
@@ -35,22 +36,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${d}/${m}/${y}`;
   }
 
-  // 2) Fecha estimada al abrir y al cambiar radios
+  // 2) Fecha estimada inicial + por cambios
   function recalcularFechaRetira() {
     const sel = document.querySelector("input[name='entrega']:checked");
     if (!sel) return;
-    const dias = parseInt(sel.value, 10); // 7 / 3 / 15 (Stock/Urgente/Laboratorio):contentReference[oaicite:5]{index=5}
-
+    const dias = parseInt(sel.value, 10); // 7 / 3 / 15
     const base = parseFechaDDMMYY((document.getElementById("fecha")?.value || "").trim());
     const estimada = new Date(base);
     estimada.setDate(estimada.getDate() + dias);
     if (fechaRetiraInput) fechaRetiraInput.value = fmtDDMMYY(estimada);
   }
+  radiosEntrega.forEach(r => r.addEventListener("change", recalcularFechaRetira));
+  recalcularFechaRetira();
 
-  radiosEntrega.forEach(radio => radio.addEventListener("change", recalcularFechaRetira));
-  recalcularFechaRetira(); // cálculo inicial
-
-  // Número de trabajo cuando completás el teléfono
+  // 3) Generar número de trabajo desde teléfono
   telefonoInput.addEventListener("blur", () => {
     const tel = telefonoInput.value.replace(/\D/g, '');
     if (tel.length >= 4) {
@@ -67,23 +66,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Nombre por DNI
+  // 4) Traer nombre por DNI con lupita
   dniInput.addEventListener("blur", () => {
-    if (dniInput.value.trim()) buscarNombrePorDNI(dniInput, nombreInput, spinner);
+    if (dniInput.value.trim()) buscarNombrePorDNI(dniInput, nombreInput, dniLoading);
   });
 
-  // Modelo y precio de armazón
+  // 5) Modelo y precio de armazón
   numeroArmazonInput.addEventListener("blur", () => {
     if (numeroArmazonInput.value.trim()) {
       buscarArmazonPorNumero(numeroArmazonInput, armazonDetalleInput, precioArmazonInput, spinner);
     }
   });
 
+  // 6) Calcular total/saldo
   configurarCalculoPrecios();
 
-  // Guardar
+  // 7) Guardar
   document.getElementById("formulario").addEventListener("submit", async (e) => {
     e.preventDefault();
-    await guardarTrabajo(); // usa API_URL de api.js:contentReference[oaicite:6]{index=6}
+    await guardarTrabajo();
   });
 });
