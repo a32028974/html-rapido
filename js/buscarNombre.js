@@ -2,13 +2,9 @@
 import { API_URL } from './api.js';
 
 /**
- * Busca en tu base por DNI y completa nombre y teléfono (si están guardados).
- * Muestra un spinner/lupita mientras busca.
- *
- * dniInput:        <input id="dni">
- * nombreInput:     <input id="nombre">
- * telefonoInput:   <input id="telefono">
- * indicadorInline: <span id="dni-loading"> (lupita)
+ * Busca por DNI y completa nombre + teléfono (si existen).
+ * - Intenta JSON (&json=1) y, si falla, cae a texto plano (modo viejo).
+ * - Muestra lupita y "Buscando..." mientras consulta.
  */
 export async function buscarNombrePorDNI(dniInput, nombreInput, telefonoInput, indicadorInline) {
   const dni = (dniInput?.value || "").trim();
@@ -18,40 +14,56 @@ export async function buscarNombrePorDNI(dniInput, nombreInput, telefonoInput, i
     return;
   }
 
-  if (indicadorInline) indicadorInline.hidden = false;
+  const showLoading = (on) => {
+    if (indicadorInline) indicadorInline.hidden = !on;
+    if (nombreInput) nombreInput.placeholder = on ? "Buscando…" : "Apellido y nombre";
+  };
+
+  showLoading(true);
+
+  // helper: intenta leer JSON; si no, texto
+  const tryFetch = async (url) => {
+    const res = await fetch(url, { method: "GET" });
+    let payload, text;
+    try {
+      payload = await res.json();
+      return { kind: "json", data: payload, ok: res.ok };
+    } catch {
+      text = await res.text();
+      return { kind: "text", data: text, ok: res.ok };
+    }
+  };
 
   try {
-    // Nuevo: pedimos JSON para traer nombre + teléfono
-    const url = `${API_URL}?buscarDNI=${encodeURIComponent(dni)}&json=1`;
-    const res = await fetch(url, { method: "GET" });
+    // 1) Primer intento: JSON
+    let resp = await tryFetch(`${API_URL}?buscarDNI=${encodeURIComponent(dni)}&json=1`);
+    console.log("[DNI] respuesta 1:", resp);
 
-    // Intentamos JSON; si no, caemos a texto (compatibilidad)
-    let data, txt;
-    try {
-      data = await res.json();
-    } catch {
-      txt = await res.text();
-    }
-
-    if (data && data.ok) {
-      // Rellena si hay datos; el teléfono queda editable
-      if (nombreInput)   nombreInput.value   = (data.nombre || "").toUpperCase();
-      if (telefonoInput) telefonoInput.value = (data.telefono || "");
+    // 2) Si no trae ok/JSON válido, probamos sin json=1 (modo viejo)
+    if (resp.kind === "json" && resp.data && resp.data.ok) {
+      const nombre = (resp.data.nombre || "").toUpperCase();
+      const telefono = resp.data.telefono || "";
+      if (nombreInput)   nombreInput.value = nombre;
+      if (telefonoInput && telefono) telefonoInput.value = telefono;
     } else {
-      // Compatibilidad: si el backend devuelve solo texto
-      const nombre = txt || "";
-      if (nombre.startsWith("ERROR")) {
-        if (nombreInput)   nombreInput.value = "";
-        // no sobreescribo teléfono si hay uno tipeado
+      // Fallback texto plano
+      if (resp.kind !== "text") {
+        resp = await tryFetch(`${API_URL}?buscarDNI=${encodeURIComponent(dni)}`);
+        console.log("[DNI] respuesta fallback:", resp);
+      }
+      const nombreTxt = (typeof resp.data === "string" ? resp.data : "") || "";
+      if (nombreTxt.startsWith("ERROR")) {
+        // no encontrado → no tocamos lo que hayas escrito en teléfono
+        if (nombreInput) nombreInput.value = "";
       } else {
-        if (nombreInput) nombreInput.value = nombre.toUpperCase();
+        if (nombreInput) nombreInput.value = nombreTxt.toUpperCase();
       }
     }
   } catch (err) {
     console.error("Error buscando nombre por DNI:", err);
-    if (nombreInput)   nombreInput.value = "";
-    // teléfono se deja como esté, por si ya lo escribiste
+    // No borramos teléfono por si ya lo escribiste
+    if (nombreInput) nombreInput.value = "";
   } finally {
-    if (indicadorInline) indicadorInline.hidden = true;
+    showLoading(false);
   }
 }
