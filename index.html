@@ -1,16 +1,15 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Ingreso rápido</title>
   <link rel="stylesheet" href="estilos.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#111827">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo"> v15-8 18.32 Ingreso rápido</h2>
+  <h2 class="titulo"> Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -39,7 +38,6 @@
     <div class="flex-group">
       <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
 
-      <!-- DNI + lupita inline -->
       <div class="dni-wrapper">
         <input type="text" name="dni" id="dni" placeholder="DNI" required>
         <span id="dni-loading" class="inline-spinner" aria-label="Buscando" title="Buscando…" hidden></span>
@@ -50,7 +48,10 @@
     </div>
 
     <div class="flex-group">
-      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" required>
+      <!-- Autocompletado desde base: list="lista-cristales" -->
+      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" list="lista-cristales" required>
+      <datalist id="lista-cristales"></datalist>
+
       <input type="text" id="precio_cristal" placeholder="Precio">
     </div>
 
@@ -121,12 +122,13 @@
   <p id="mensaje"></p>
 
   <script type="module" src="js/main.js"></script>
+
   <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js").catch(console.error);
-    });
-  }
-</script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+      });
+    }
+  </script>
 </body>
 </html>
