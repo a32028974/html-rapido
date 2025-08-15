@@ -55,6 +55,22 @@ body {
   font-size: 0.9em;
 }
 
+/* === Lupita / spinner inline del DNI === */
+.dni-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.inline-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cfd8dc;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+[hidden] { display: none !important; }
+
 @media print {
   body {
     width: 180mm;
