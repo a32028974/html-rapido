@@ -1,22 +1,30 @@
 // buscarNombre.js
 import { API_URL } from './api.js';
 
-export async function buscarNombrePorDNI(dniInput, nombreInput, spinner) {
+export async function buscarNombrePorDNI(dniInput, nombreInput, indicadorInline) {
+  const dni = (dniInput?.value || "").trim();
+  if (!dni) {
+    if (nombreInput) nombreInput.value = "";
+    return;
+  }
+
+  // mostrar lupita inline
+  if (indicadorInline) indicadorInline.hidden = false;
+
   try {
-    if (spinner) spinner.style.display = "block";
-    const dni = dniInput.value.trim();
-    const res = await fetch(`${API_URL}?buscarDNI=${dni}`);
+    const res = await fetch(`${API_URL}?buscarDNI=${encodeURIComponent(dni)}`);
     const nombre = await res.text();
 
     if (nombre.startsWith("ERROR")) {
       nombreInput.value = "";
     } else {
-      nombreInput.value = nombre;
+      nombreInput.value = nombre.toUpperCase();
     }
   } catch (err) {
     console.error("Error buscando nombre por DNI:", err);
     nombreInput.value = "";
   } finally {
-    if (spinner) spinner.style.display = "none";
+    // ocultar lupita inline
+    if (indicadorInline) indicadorInline.hidden = true;
   }
 }
