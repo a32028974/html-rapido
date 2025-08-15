@@ -84,3 +84,8 @@ body {
     display: none !important;
   }
 }
+
+/* Graduación */
+.receta .fila select { width: 110px; }
+.receta .fila input[name$="_eje"] { width: 110px; }
+
