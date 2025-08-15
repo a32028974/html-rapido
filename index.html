@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">v15-8 17.27 Ingreso rápido</h2>
+  <h2 class="titulo"> v15-8 17.44Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -36,7 +36,13 @@
 
     <div class="flex-group">
       <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
-      <input type="text" name="dni" id="dni" placeholder="DNI" required>
+
+      <!-- DNI + lupita inline -->
+      <div class="dni-wrapper">
+        <input type="text" name="dni" id="dni" placeholder="DNI" required>
+        <span id="dni-loading" class="inline-spinner" aria-label="Buscando" title="Buscando…" hidden></span>
+      </div>
+
       <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
       <input type="text" name="telefono" id="telefono" placeholder="Número de teléfono" required>
     </div>
