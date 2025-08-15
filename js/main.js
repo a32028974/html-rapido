@@ -21,12 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1) Fecha de hoy (dd/mm/aa)
   cargarFechaHoy();
 
-  // Helpers de fecha
+  // Helpers fecha
   function parseFechaDDMMYY(str) {
     if (!str) return new Date();
     const [d, m, a] = str.split("/");
     let year = parseInt(a, 10);
-    if (a.length === 2) year = 2000 + year; // 24 -> 2024
+    if (a.length === 2) year = 2000 + year;
     return new Date(year, parseInt(m,10)-1, parseInt(d,10));
   }
   function fmtDDMMYY(date) {
@@ -36,11 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${d}/${m}/${y}`;
   }
 
-  // 2) Fecha estimada inicial + por cambios
+  // 2) Fecha estimada
   function recalcularFechaRetira() {
     const sel = document.querySelector("input[name='entrega']:checked");
     if (!sel) return;
-    const dias = parseInt(sel.value, 10); // 7 / 3 / 15
+    const dias = parseInt(sel.value, 10);
     const base = parseFechaDDMMYY((document.getElementById("fecha")?.value || "").trim());
     const estimada = new Date(base);
     estimada.setDate(estimada.getDate() + dias);
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   radiosEntrega.forEach(r => r.addEventListener("change", recalcularFechaRetira));
   recalcularFechaRetira();
 
-  // 3) Generar número de trabajo desde teléfono
+  // 3) Número de trabajo desde teléfono
   telefonoInput.addEventListener("blur", () => {
     const tel = telefonoInput.value.replace(/\D/g, '');
     if (tel.length >= 4) {
@@ -66,9 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 4) Traer nombre por DNI con lupita
+  // 4) DNI -> trae nombre y teléfono (con lupita)
   dniInput.addEventListener("blur", () => {
-    if (dniInput.value.trim()) buscarNombrePorDNI(dniInput, nombreInput, dniLoading);
+    if (dniInput.value.trim()) {
+      buscarNombrePorDNI(dniInput, nombreInput, telefonoInput, dniLoading);
+    }
   });
 
   // 5) Modelo y precio de armazón
@@ -78,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 6) Calcular total/saldo
+  // 6) Totales
   configurarCalculoPrecios();
 
   // 7) Guardar
