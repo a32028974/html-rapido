@@ -4,6 +4,7 @@ import { buscarNombrePorDNI } from './buscarNombre.js';
 import { buscarArmazonPorNumero } from './buscarArmazon.js';
 import { configurarCalculoPrecios } from './calculos.js';
 import { guardarTrabajo } from './guardar.js';
+import { cargarCristales } from './sugerencias.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const fechaRetiraInput     = document.getElementById("fecha_retira");
@@ -49,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   radiosEntrega.forEach(r => r.addEventListener("change", recalcularFechaRetira));
   recalcularFechaRetira();
 
-  // 3) Número de trabajo desde teléfono
+  // 3) N° de trabajo desde teléfono
   telefonoInput.addEventListener("blur", () => {
     const tel = telefonoInput.value.replace(/\D/g, '');
     if (tel.length >= 4) {
@@ -66,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 4) DNI -> trae nombre y teléfono (con lupita)
+  // 4) DNI -> nombre + teléfono con lupita
   dniInput.addEventListener("blur", () => {
     if (dniInput.value.trim()) {
       buscarNombrePorDNI(dniInput, nombreInput, telefonoInput, dniLoading);
@@ -83,7 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // 6) Totales
   configurarCalculoPrecios();
 
-  // 7) Guardar
+  // 7) Sugerencias de “Tipo de cristal” desde la base
+  cargarCristales(); // llena <datalist id="lista-cristales">
+
+  // 8) Guardar
   document.getElementById("formulario").addEventListener("submit", async (e) => {
     e.preventDefault();
     await guardarTrabajo();
