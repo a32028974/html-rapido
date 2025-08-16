@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Ingreso rápido</title>
+  <title>Carga de receta</title>
   <link rel="stylesheet" href="estilos.css">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#111827">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo">V16-8 10.56 Ingreso rápido</h2>
+  <h2 class="titulo">Optica Cristal v16-8 11.37 </h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
@@ -137,7 +137,7 @@
       </div>
 
       <div class="fila">
-        <input type="text" name="add" placeholder="ADD">
+        <input type="text" name="add" id="add" placeholder="ADD">
       </div>
     </div>
 
@@ -166,6 +166,9 @@
       </div>
     </div>
   </form>
+
+  <!-- Área para IMPRESIÓN: se completa por JS y solo se muestra al imprimir -->
+  <div id="print-area" class="print-area" aria-hidden="true"></div>
 
   <div class="acciones">
     <button type="button" id="btn-imprimir">🖨️ Imprimir</button>
