@@ -6,6 +6,9 @@ import { configurarCalculoPrecios } from './calculos.js';
 import { guardarTrabajo } from './guardar.js';
 import { cargarCristales } from './sugerencias.js';
 
+// Si ya tenés una URL de QR, ponela acá (o seteala en runtime: window.QR_URL = "https://..."):
+window.QR_URL = window.QR_URL || "";
+
 document.addEventListener("DOMContentLoaded", () => {
   const fechaRetiraInput     = document.getElementById("fecha_retira");
   const telefonoInput        = document.getElementById("telefono");
@@ -19,10 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const spinner              = document.getElementById("spinner");
   const radiosEntrega        = document.querySelectorAll("input[name='entrega']");
 
-  // Fechas
+  // ===== Fechas
   cargarFechaHoy();
-  function parseFechaDDMMYY(str){ if(!str) return new Date(); const [d,m,a]=str.split("/"); let y=parseInt(a,10); if(a.length===2) y=2000+y; return new Date(y,parseInt(m,10)-1,parseInt(d,10)); }
-  function fmtDDMMYY(date){ const d=String(date.getDate()).padStart(2,'0'); const m=String(date.getMonth()+1).padStart(2,'0'); const y=String(date.getFullYear()).slice(-2); return `${d}/${m}/${y}`; }
+  function parseFechaDDMMYY(str){
+    if(!str) return new Date();
+    const [d,m,a]=str.split("/");
+    let y=parseInt(a,10);
+    if(a.length===2) y=2000+y;
+    return new Date(y,parseInt(m,10)-1,parseInt(d,10));
+  }
+  function fmtDDMMYY(date){
+    const d=String(date.getDate()).padStart(2,'0');
+    const m=String(date.getMonth()+1).padStart(2,'0');
+    const y=String(date.getFullYear()).slice(-2);
+    return `${d}/${m}/${y}`;
+  }
   function recalcularFechaRetira(){
     const sel = document.querySelector("input[name='entrega']:checked");
     if(!sel) return;
@@ -34,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   radiosEntrega.forEach(r => r.addEventListener("change", recalcularFechaRetira));
   recalcularFechaRetira();
 
-  // N° trabajo desde teléfono
+  // ===== N° de trabajo desde teléfono
   telefonoInput.addEventListener("blur", () => {
     const tel = telefonoInput.value.replace(/\D/g,'');
     if (tel.length >= 4) {
@@ -50,44 +64,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // DNI -> nombre + teléfono
+  // ===== DNI -> nombre + teléfono (con lupita)
   dniInput.addEventListener("blur", () => {
     if (dniInput.value.trim()) buscarNombrePorDNI(dniInput, nombreInput, telefonoInput, dniLoading);
   });
 
-  // Armazón -> modelo/precio/estado
+  // ===== Armazón -> modelo/precio/estado (toast + color del input)
   numeroArmazonInput.addEventListener("blur", () => {
     if (numeroArmazonInput.value.trim()) {
       buscarArmazonPorNumero(numeroArmazonInput, armazonDetalleInput, precioArmazonInput, spinner);
     }
   });
 
-  // Totales y lista de cristales
+  // ===== Totales + datalist de cristales
   configurarCalculoPrecios();
   cargarCristales();
 
-  // === Graduaciones ===
+  // ===== Graduaciones (combos) + validación de EJE
   cargarOpcionesGraduacion();
   configurarValidacionesEje();
 
-  // Guardar
+  // ===== Guardar
   document.getElementById("formulario").addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!validarEjesRequeridos()) return;
     await guardarTrabajo();
   });
 
-  // Botones inferiores
+  // ===== Botones inferiores
   const btnImp = document.getElementById("btn-imprimir");
   const btnClr = document.getElementById("btn-limpiar");
   if (btnImp) btnImp.addEventListener("click", () => { buildPrintArea(); window.print(); });
   if (btnClr) btnClr.addEventListener("click", limpiarFormulario);
 
-  // Exponer para que guardar.js pueda imprimir con el formato
+  // Exponer para que guardar.js use este layout cuando elegís "Imprimir ahora"
   window.__buildPrintArea = buildPrintArea;
 });
 
-/* ========= Graduación ========= */
+/* =========================
+   Graduación: combos ESF/CIL
+   ========================= */
 function cargarOpcionesGraduacion() {
   const od_esf = document.getElementById("od_esf");
   const od_cil = document.getElementById("od_cil");
@@ -99,25 +115,34 @@ function cargarOpcionesGraduacion() {
   agregarPlaceholder(od_esf, "ESF"); agregarPlaceholder(od_cil, "CIL");
   agregarPlaceholder(oi_esf, "ESF"); agregarPlaceholder(oi_cil, "CIL");
 
+  // ESF: -15.00 a +15.00 (paso 0.25)
   const esfVals = rangoDecimales(-15, 15, 0.25, true); // incluye 0.00 una vez
   esfVals.forEach(v => { od_esf.appendChild(opcion(v)); oi_esf.appendChild(opcion(v)); });
 
+  // CIL: 0.00 + negativos -0.25..-6.00 + positivos +0.25..+6.00
   const cilVals = ["0.00"]
     .concat(rangoDecimales(-0.25, -6, -0.25, false))
     .concat(rangoDecimales(0.25, 6, 0.25, false));
   cilVals.forEach(v => { od_cil.appendChild(opcion(v)); oi_cil.appendChild(opcion(v)); });
 }
-function agregarPlaceholder(select, texto){ const o=document.createElement("option"); o.textContent=texto; o.value=""; o.disabled=true; o.selected=true; select.appendChild(o); }
+function agregarPlaceholder(select, texto){
+  const o=document.createElement("option");
+  o.textContent=texto; o.value=""; o.disabled=true; o.selected=true;
+  select.appendChild(o);
+}
 function opcion(valor){ const o=document.createElement("option"); o.value=valor; o.textContent=valor; return o; }
 function rangoDecimales(inicio, fin, paso, skipZero){
-  const res=[]; const fmt=n=>{ const s=Number(n).toFixed(2); return Number(n)>0?`+${s}`:Number(n)===0?"0.00":s; };
+  const res=[];
+  const fmt=n=>{ const s=Number(n).toFixed(2); return Number(n)>0?`+${s}`:Number(n)===0?"0.00":s; };
   if (inicio<=fin && paso>0){ for(let v=inicio; v<=fin+1e-9; v+=paso){ if(skipZero && Math.abs(v)<1e-9) continue; res.push(fmt(v)); } }
   else { for(let v=inicio; v>=fin-1e-9; v+=paso){ if(skipZero && Math.abs(v)<1e-9) continue; res.push(fmt(v)); } }
   if (skipZero && !res.includes("0.00")) res.splice(Math.floor(res.length/2),0,"0.00");
   return res;
 }
 
-/* ===== Validación EJE ===== */
+/* =========================
+   Validación de EJE
+   ========================= */
 function configurarValidacionesEje() {
   [{cil:"od_cil",eje:"od_eje"},{cil:"oi_cil",eje:"oi_eje"}].forEach(({cil,eje})=>{
     const sel=document.getElementById(cil), inp=document.getElementById(eje);
@@ -145,7 +170,9 @@ function validarEjesRequeridos(){
   return true;
 }
 
-/* ========= LIMPIAR ========= */
+/* =========================
+   Limpiar (sin tocar fechas ni entrega)
+   ========================= */
 function limpiarFormulario(){
   const ids = [
     "numero_trabajo","dni","nombre","telefono",
@@ -164,48 +191,78 @@ function limpiarFormulario(){
   });
 }
 
-/* ========= IMPRESIÓN ========= */
+/* =========================
+   Impresión (A4) — panel 140×120 + cupón 50×120
+   ========================= */
 function buildPrintArea(){
   const P = (id) => (document.getElementById(id)?.value || "").toString();
+  const money = (v) => {
+    const n = parseFloat((v||"").toString().replace(/[^0-9.,-]/g,"").replace(",", ".")) || 0;
+    return "$" + n.toLocaleString("es-AR", {minimumFractionDigits:2, maximumFractionDigits:2});
+  };
+  const QR = (window.QR_URL || "").toString();
 
   const html = `
-    <div class="print-box">
-      <div class="title">Ingreso de trabajo</div>
-      <div class="grid">
-        <div><strong>Fecha:</strong> ${P("fecha")}</div>
-        <div><strong>Retira:</strong> ${P("fecha_retira")}</div>
-        <div><strong>N° trabajo:</strong> ${P("numero_trabajo")}</div>
-        <div><strong>DR:</strong> ${P("dr")}</div>
-        <div><strong>DNI:</strong> ${P("dni")}</div>
-        <div><strong>Tel:</strong> ${P("telefono")}</div>
-        <div style="grid-column:1/-1;"><strong>Cliente:</strong> ${P("nombre")}</div>
-      </div>
+    <div class="print-sheet">
 
-      <div class="print-box">
-        <div class="print-row"><strong>Cristal:</strong><span>${P("cristal")} — $${P("precio_cristal")}</span></div>
-        <div class="print-row"><strong>Armazón:</strong><span>${P("numero_armazon")} ${P("armazon_detalle")} — $${P("precio_armazon")}</span></div>
-        <div class="print-row"><strong>Otro:</strong><span>${P("otro_concepto")} — $${P("precio_otro")}</span></div>
-        <div class="print-row"><strong>Descripción:</strong><span>${P("descripcion")}</span></div>
-        <div class="print-row"><strong>Tipo:</strong><span>${P("tipo")}</span></div>
-      </div>
+      <!-- PANEL PRINCIPAL 140x120 -->
+      <div class="panel panel-main">
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="panel-title">Ingreso de trabajo</div>
 
-      <div class="print-box">
-        <div class="print-row"><strong>OD:</strong>
-          <span>ESF ${P("od_esf")}  |  CIL ${P("od_cil")}  |  EJE ${P("od_eje")}</span>
+        <div class="rows">
+          <div><strong>Fecha:</strong> ${P("fecha")}</div>
+          <div><strong>Retira (estimada):</strong> ${P("fecha_retira")}</div>
+          <div><strong>N° trabajo:</strong> ${P("numero_trabajo")}</div>
+          <div><strong>DNI:</strong> ${P("dni")}</div>
+          <div class="row-full"><strong>Cliente:</strong> ${P("nombre")}</div>
+          <div><strong>Tel:</strong> ${P("telefono")}</div>
+          <div><strong>DR:</strong> ${P("dr")}</div>
         </div>
-        <div class="print-row"><strong>OI:</strong>
-          <span>ESF ${P("oi_esf")}  |  CIL ${P("oi_cil")}  |  EJE ${P("oi_eje")}</span>
+
+        <table class="print-table">
+          <tr><td><strong>Cristal</strong></td><td>${P("cristal")} — ${money(P("precio_cristal"))}</td></tr>
+          <tr><td><strong>Armazón</strong></td><td>${P("numero_armazon")} ${P("armazon_detalle")} — ${money(P("precio_armazon"))}</td></tr>
+          <tr><td><strong>Otro</strong></td><td>${P("otro_concepto")} — ${money(P("precio_otro"))}</td></tr>
+          <tr><td><strong>Descripción</strong></td><td>${P("descripcion")}</td></tr>
+          <tr><td><strong>Tipo</strong></td><td>${P("tipo")}</td></tr>
+        </table>
+
+        <table class="print-table">
+          <tr><td><strong>OD</strong></td><td>ESF ${P("od_esf")}  |  CIL ${P("od_cil")}  |  EJE ${P("od_eje")}</td></tr>
+          <tr><td><strong>OI</strong></td><td>ESF ${P("oi_esf")}  |  CIL ${P("oi_cil")}  |  EJE ${P("oi_eje")}</td></tr>
+          <tr><td><strong>ADD</strong></td><td>${P("add")}</td></tr>
+        </table>
+
+        <div class="print-footer">
+          <div><strong>TOTAL:</strong> ${money(P("total"))}</div>
+          <div><strong>SEÑA:</strong> ${money(P("sena"))} — <strong>SALDO:</strong> ${money(P("saldo"))}</div>
+          <div><strong>Forma de pago:</strong> ${P("forma_pago")}</div>
+          <div><strong>Vendedor:</strong> ${P("vendedor")}</div>
         </div>
-        <div class="print-row"><strong>ADD:</strong><span>${P("add")}</span></div>
       </div>
 
-      <div class="print-box">
-        <div class="print-row"><strong>TOTAL:</strong><span>$${P("total")}</span></div>
-        <div class="print-row"><strong>SEÑA:</strong><span>$${P("sena")}</span></div>
-        <div class="print-row"><strong>SALDO:</strong><span>$${P("saldo")}</span></div>
-        <div class="print-row"><strong>Forma de pago:</strong><span>${P("forma_pago")}</span></div>
-        <div class="print-row"><strong>Vendedor:</strong><span>${P("vendedor")}</span></div>
+      <!-- CUPÓN 50x120 -->
+      <div class="panel panel-coupon">
+        <span class="cut-hint" aria-hidden="true"></span>
+
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="coupon-title">CUPÓN DE RETIRO</div>
+
+        <div class="coupon-field"><span class="coupon-strong">N° Trabajo:</span> ${P("numero_trabajo")}</div>
+        <div class="coupon-field"><span class="coupon-strong">Cliente:</span> ${P("nombre")}</div>
+        <div class="coupon-field"><span class="coupon-strong">Encargó:</span> ${P("fecha")}</div>
+        <div class="coupon-field"><span class="coupon-strong">Entrega (estimada):</span> ${P("fecha_retira")}</div>
+        <div class="coupon-field"><span class="coupon-strong">Total:</span> ${money(P("total"))}</div>
+        <div class="coupon-field"><span class="coupon-strong">Seña:</span> ${money(P("sena"))}</div>
+        <div class="coupon-field"><span class="coupon-strong">Saldo:</span> ${money(P("saldo"))}</div>
+
+        ${QR
+          ? `<img src="${QR}" class="qr" alt="QR">`
+          : `<div class="qr" style="display:flex;align-items:center;justify-content:center;font-size:10px;">QR</div>`
+        }
       </div>
+
     </div>
   `;
   const area = document.getElementById("print-area");
