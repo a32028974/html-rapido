@@ -1,13 +1,9 @@
 // guardar.js
 import { API_URL } from './api.js';
 
-// Helpers
+// helpers
 const $ = (id) => document.getElementById(id);
 const toUpper = (v) => (v ?? "").toString().trim().toUpperCase();
-const toNumber = (v) => {
-  const n = parseFloat((v ?? "").toString().replace(",", "."));
-  return isNaN(n) ? "" : n.toFixed(2);
-};
 
 // Radios entrega (7,3,15) -> NORMAL / URGENTE / LABORATORIO
 function getRetiroTipo() {
@@ -28,38 +24,18 @@ function showMsg(text, color = "green") {
   p.style.color = color;
 }
 
-function limpiarForm() {
-  [
-    "numero_trabajo","dni","nombre","telefono",
-    "cristal","precio_cristal","numero_armazon",
-    "armazon_detalle","precio_armazon",
-    "otro_concepto","precio_otro",
-    "descripcion","tipo",
-    "od_esf","od_cil","od_eje",
-    "oi_esf","oi_cil","oi_eje",
-    "add","vendedor","forma_pago",
-    "total","sena","saldo"
-  ].forEach(id => { const el = $(id); if (el) el.value = ""; });
-  const total = $("total"); if (total) total.value = (0).toFixed(2);
-  const saldo = $("saldo"); if (saldo) saldo.value = (0).toFixed(2);
-}
-
 function buildBody() {
-  const fechaEncargo = ($("fecha")?.value || "").trim();
-  const fechaRetiraUI = ($("fecha_retira")?.value || "").trim();
-  const retiro_tipo = getRetiroTipo();
-
   const params = new URLSearchParams({
     numero_trabajo : ($("numero_trabajo")?.value || "").trim(),
     dni            : ($("dni")?.value || "").trim(),
     nombre         : toUpper($("nombre")?.value),
     telefono       : ($("telefono")?.value || "").trim(),
+
     cristal        : toUpper($("cristal")?.value),
     numero_armazon : ($("numero_armazon")?.value || "").trim(),
     armazon_detalle: toUpper($("armazon_detalle")?.value),
 
-    // total: si no confias en #total, lo recomputa
-    total          : (() => {
+    total          : (()=>{
       const a = parseFloat(($("precio_cristal")?.value || "0").replace(",", ".")) || 0;
       const b = parseFloat(($("precio_armazon")?.value || "0").replace(",", ".")) || 0;
       const c = parseFloat(($("precio_otro")?.value || "0").replace(",", ".")) || 0;
@@ -83,12 +59,12 @@ function buildBody() {
 
     vendedor       : toUpper($("vendedor")?.value),
 
-    // informativos + cálculo de backend
-    fecha_ui       : fechaEncargo,
-    fecha_retira_ui: fechaRetiraUI,
-    retiro_tipo
-  });
+    // nuevo: DR (oculista)
+    dr             : toUpper($("dr")?.value),
 
+    // info para backend
+    retiro_tipo    : getRetiroTipo()
+  });
   return params;
 }
 
@@ -113,8 +89,20 @@ export async function guardarTrabajo() {
 
     const text = await res.text();
     if (res.ok && text.startsWith("✅")) {
-      showMsg("✅ Trabajo guardado correctamente.", "green");
-      limpiarForm();
+      showMsg("✅ Guardado. Podés imprimir o seguir editando.", "green");
+
+      // Ofrecer imprimir
+      if (window.Swal) {
+        Swal.fire({
+          title: "Trabajo guardado",
+          text: "¿Imprimir ahora?",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "Imprimir",
+          cancelButtonText: "Cerrar"
+        }).then(r => { if (r.isConfirmed) window.print(); });
+      }
+      // ⚠️ Ya no limpiamos el formulario automáticamente
     } else {
       showMsg(text || "❌ Error al guardar.", "red");
     }
