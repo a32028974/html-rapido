@@ -9,82 +9,131 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <h2 class="titulo"> v16-8 10.39 Ingreso rápido</h2>
+  <h2 class="titulo">V16-8 10.51 Ingreso rápido</h2>
 
   <div class="spinner" id="spinner">
     <div class="loader"></div>
     <div class="spinner-text">Cargando...</div>
   </div>
 
-  <form id="formulario">
-    <div class="flex-group">
-      <div class="grupo">
-        <label for="fecha">Fecha que encarga:</label>
+  <form id="formulario" class="card">
+    <!-- Fechas -->
+    <div class="grid-2">
+      <label class="field">
+        <span>Fecha que encarga</span>
         <input type="text" name="fecha" id="fecha" readonly>
-      </div>
-      <div class="grupo">
-        <label for="fecha_retira">Fecha que retira (estimada):</label>
+      </label>
+      <label class="field">
+        <span>Fecha que retira (estimada)</span>
         <input type="text" name="fecha_retira" id="fecha_retira" readonly>
-      </div>
+      </label>
     </div>
 
-    <p>Días estimados de entrega:</p>
-    <div class="flex-group">
+    <!-- Entrega -->
+    <div class="row">
+      <span class="muted">Días estimados de entrega:</span>
       <label><input type="radio" name="entrega" value="7" checked> Stock <span class="sub">(7 días aprox)</span></label>
       <label><input type="radio" name="entrega" value="3"> Urgente <span class="sub">(3 días aprox)</span></label>
       <label><input type="radio" name="entrega" value="15"> Laboratorio <span class="sub">(15 días aprox)</span></label>
     </div>
 
-    <div class="flex-group">
-      <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Número de trabajo" required>
+    <!-- Identificación -->
+    <div class="grid-4">
+      <label class="field">
+        <span>Número de trabajo</span>
+        <input type="text" name="numero_trabajo" id="numero_trabajo" placeholder="Auto por teléfono" required>
+      </label>
 
-      <div class="dni-wrapper">
-        <input type="text" name="dni" id="dni" placeholder="DNI" required>
-        <span id="dni-loading" class="inline-spinner" aria-label="Buscando" title="Buscando…" hidden></span>
-      </div>
+      <label class="field">
+        <span>DNI</span>
+        <div class="dni-wrapper">
+          <input type="text" name="dni" id="dni" required>
+          <span id="dni-loading" class="inline-spinner" hidden></span>
+        </div>
+      </label>
 
-      <input type="text" name="nombre" id="nombre" placeholder="Apellido y nombre" required>
-      <input type="text" name="telefono" id="telefono" placeholder="Número de teléfono" required>
+      <label class="field">
+        <span>Apellido y nombre</span>
+        <input type="text" name="nombre" id="nombre" required>
+      </label>
+
+      <label class="field">
+        <span>Número de teléfono</span>
+        <input type="text" name="telefono" id="telefono" required>
+      </label>
     </div>
 
-    <div class="flex-group">
-      <!-- Autocompletado desde base: list="lista-cristales" -->
-      <input type="text" name="cristal" id="cristal" placeholder="Tipo de cristal" list="lista-cristales" required>
-      <datalist id="lista-cristales"></datalist>
+    <!-- Producto -->
+    <div class="grid-2">
+      <label class="field">
+        <span>Tipo de cristal</span>
+        <input type="text" name="cristal" id="cristal" list="lista-cristales" required>
+        <datalist id="lista-cristales"></datalist>
+      </label>
 
-      <input type="text" id="precio_cristal" placeholder="Precio">
+      <label class="field">
+        <span>Precio</span>
+        <input type="text" id="precio_cristal" placeholder="">
+      </label>
     </div>
 
-    <input type="text" name="numero_armazon" id="numero_armazon" placeholder="Número de armazón (opcional)">
+    <label class="field">
+      <span>Número de armazón (opcional)</span>
+      <input type="text" name="numero_armazon" id="numero_armazon">
+    </label>
 
-    <div class="flex-group">
-      <input type="text" name="armazon_detalle" id="armazon_detalle" placeholder="Modelo de armazón">
-      <input type="text" id="precio_armazon" placeholder="Precio">
+    <div class="grid-2">
+      <label class="field">
+        <span>Modelo de armazón</span>
+        <input type="text" name="armazon_detalle" id="armazon_detalle">
+      </label>
+
+      <label class="field">
+        <span>Precio</span>
+        <input type="text" id="precio_armazon">
+      </label>
     </div>
 
-    <div class="flex-group">
-      <input type="text" name="otro_concepto" id="otro_concepto" placeholder="Otro concepto">
-      <input type="text" id="precio_otro" placeholder="Precio">
+    <div class="grid-2">
+      <label class="field">
+        <span>Otro concepto</span>
+        <input type="text" name="otro_concepto" id="otro_concepto">
+      </label>
+      <label class="field">
+        <span>Precio</span>
+        <input type="text" id="precio_otro">
+      </label>
     </div>
 
-    <div class="flex-group">
-      <input type="text" name="descripcion" placeholder="Descripción">
-      <input type="text" name="tipo" placeholder="Tipo">
+    <div class="grid-3">
+      <label class="field">
+        <span>Descripción</span>
+        <input type="text" name="descripcion">
+      </label>
+      <label class="field">
+        <span>Tipo</span>
+        <input type="text" name="tipo">
+      </label>
+      <label class="field">
+        <span>DR (oculista)</span>
+        <input type="text" name="dr" id="dr" placeholder="Ej: Dr. Pérez">
+      </label>
     </div>
 
+    <!-- Receta -->
     <div class="receta">
       <h3>OD</h3>
       <div class="fila">
         <select name="od_esf" id="od_esf"></select>
         <select name="od_cil" id="od_cil"></select>
-        <input type="text" name="od_eje" placeholder="EJE">
+        <input type="text" name="od_eje" id="od_eje" placeholder="EJE">
       </div>
 
       <h3>OI</h3>
       <div class="fila">
         <select name="oi_esf" id="oi_esf"></select>
         <select name="oi_cil" id="oi_cil"></select>
-        <input type="text" name="oi_eje" placeholder="EJE">
+        <input type="text" name="oi_eje" id="oi_eje" placeholder="EJE">
       </div>
 
       <div class="fila">
@@ -92,37 +141,40 @@
       </div>
     </div>
 
-    <div class="total-boxes">
-      <div>
-        <label for="total">TOTAL</label>
+    <!-- Totales -->
+    <div class="totales">
+      <label class="field">
+        <span>TOTAL</span>
         <input type="text" id="total" name="total" readonly>
-      </div>
-      <div>
-        <label for="sena">SEÑA</label>
+      </label>
+      <label class="field">
+        <span>SEÑA</span>
         <input type="text" id="sena" name="sena">
-      </div>
-      <div>
-        <label for="saldo">SALDO</label>
+      </label>
+      <label class="field">
+        <span>SALDO</span>
         <input type="text" id="saldo" name="saldo" readonly>
-      </div>
+      </label>
     </div>
 
-    <div class="flex-group">
+    <!-- Acciones -->
+    <div class="grid-3">
       <input type="text" name="vendedor" id="vendedor" placeholder="Nombre del vendedor">
       <input type="text" name="forma_pago" placeholder="Forma de pago">
-      <input type="submit" value="Guardar">
+      <div class="row end">
+        <input type="submit" value="Guardar">
+      </div>
     </div>
   </form>
 
   <div class="acciones">
-    <button type="button" id="btn-imprimir">🖰 Imprimir</button>
-    <button type="button" id="btn-limpiar">🪛 Limpiar</button>
+    <button type="button" id="btn-imprimir">🖨️ Imprimir</button>
+    <button type="button" id="btn-limpiar">🧹 Limpiar</button>
   </div>
 
-  <p id="mensaje"></p>
+  <p id="mensaje" class="muted"></p>
 
   <script type="module" src="js/main.js"></script>
-
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
